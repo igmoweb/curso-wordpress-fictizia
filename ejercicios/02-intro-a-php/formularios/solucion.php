@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Envio de formularios</title>
+	<title>Envio gregde formularios</title>
 </head>
 <body>
 	<?php if ( isset( $_POST['submit'] ) ): ?>
 		<?php echo strlen( $_POST['nombre'] ) ?><br/>
 		<?php echo ( $_POST['sexo'] == 'h' ) ? 'Hombre' : 'Mujer'; ?>
 	<?php endif; ?>
-
+ergerg
 	<form action="" method="POST">
 		Nombre: <input type="text" name="nombre" value="" /><br/>
 		Sexo: <br/>

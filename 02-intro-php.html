@@ -221,7 +221,7 @@ $personas = [
 ];
 
 echo '&lt;ul&gt;'
-foreach ( $personas as $anyo => $nombre ) {
+foreach ( $personas as $nombre => $anyo ) {
 	if ( es_adulto( $anyo ) )
 		echo "&lt;li&gt;Pase, " . $nombre . "&lt;/li&gt;";
 	else
@@ -407,7 +407,7 @@ class Persona {
 $yo = new Persona( 'Ignacio', 34 );
 $mi_hermano = new Persona( 'Alejandro', 31 );
 
-$yo->set_hermano( $hermano );
+$yo->set_hermano( $mi_hermano );
 
 echo "El hermano de " . $yo->nombre . " es " . $yo->hermano->nombre;
 </code></pre>						
