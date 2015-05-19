@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/beige.css" id="theme">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
 
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -233,22 +233,205 @@ echo '&lt;/ul&gt;'
 				</section>
 
 				<section>
+					<h2>HTTP Básico</h2>
+					<section>
+						<img src="img/http-basico.jpg" alt="">
+					</section>
+					<section>
+						<h3>Ejemplo de una Request (Petición)</h3>
+<pre><code>
+GET /index.php?search=hola&page=3 HTTP/1.1
+User-Agent: [DATOS DEL NAVEGADOR]
+Accept: image/gif, image/jpeg, text/*, */*
+[LÍNEA EN BLANCO]
+[CUERPO. En las peticiones GET no suele ir nada]
+
+POST /index.php HTTP/1.1
+User-Agent: [DATOS DEL NAVEGADOR]
+Accept: image/gif, image/jpeg, text/*, */*
+[LÍNEA EN BLANCO]
+?search=hola&page=3
+</code></pre>
+					</section>
+					<section>
+						<h3>Ejemplo de un Response (Respuesta)</h3>
+<pre><code>
+HTTP/1.1 200 OK
+Server:[DATOS DEL SERVIDOR]
+Content-Type: text/html
+Content-Lenght: 160
+[LÍNEA EN BLANCO]
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre>
+					</section>
+					<section>
+						<h3>Diferencias entre peticiones GET y POST</h3>
+						<ul>
+							<li>Los parámetros <strong>GET</strong> van dentro de la URL <code>(?search=a&page=3)</code>. Este tipo de peticiones son cacheables</li>
+							<li>Los parámetros <strong>POST</strong> van dentro del cuerpo de la Request. Suele utilizarse en formularios, cuando la petición va a cambiar algo en nuestro sistema o vamos a guardar algo en base de datos (un pedido por ejemplo). No es cacheable.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Variables globales de sistema en PHP</h3>
+						<p>Permiten ver información sobre el sistema o los parámetros de la petición. Son las siguientes: </p>
+						<ul>
+						<li>$_COOKIES</li>
+						<li>$_SERVER</li>
+						<li>$_ENV</li>
+						<li>$_REQUEST</li>
+						<li>$_GET</li>
+						<li>$_POST</li>
+						<li>$_FILES</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
 					<h2>Formularios</h2>
+					<section>
+						<p>En HTML, un formulario básico podría ser el siguiente:</p>
+<pre><code>
+&lt;form action=&quot;&quot; method=&quot;POST&quot;&gt;
+	&lt;input type=&quot;text&quot; name=&quot;texto&quot; value=&quot;&quot; /&gt;
+	&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Enviar&quot; /&gt;
+&lt;/form&gt;
+</code></pre>
+						<img src="img/formulario-1.png" alt="">
+					</section>
+					<section>
+						<p>Pero este formulario no sirve de mucho ya que no lo estamos procesando ni estamos guardando nada en base de datos.</p>
+						<p>Vamos a complicarlo un poco más y vamos a mostrar por pantalla lo que el usuario quiera enviar</p>
+					</section>
+					<section>
+<pre><code>
+&lt;?php
+if ( isset( $_POST['texto'] ) ) {
+	echo $texto;
+}
+else {
+	?&gt;
+		&lt;form action=&quot;&quot; method=&quot;POST&quot;&gt;
+			&lt;input type=&quot;text&quot; name=&quot;texto&quot; value=&quot;&quot; /&gt;
+			&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Enviar&quot; /&gt;
+		&lt;/form&gt;	
+	&lt;?php
+}
+</code></pre>
+					<p><strong>Explicación:</strong> Si existe el campo "Texto" (se ha enviado), mostrar el texto, en otro caso, mostrar el formulario.</p>
+					</section>
+					<section>
+						<img src="img/formulario-2.png" alt="">
+						<p>Pulsamos enviar...</p>
+						<img src="img/formulario-3.png" alt="">
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Escribe un formulario que recoja datos personales:</p>
+						<ol>
+							<li>El primer campo será el nombre (campo de texto)</li>
+							<li>El segundo recoge el sexo (radio buttons)</li>
+						</ol>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>El formulario se procesará de la siguiente manera:</p>
+						<ul>
+							<li>Se contará el número de letras que tiene el nombre</li>
+							<li>Dicho valor se saca por pantalla.</li>
+							<li>En la siguiente línea se mostrará por pantalla el sexo.</li>
+							<li>El formulario debe aparecer de nuevo para meter nuevos datos sin necesidad de volver atrás.</li>
+						</ul>
+						<p><small>Puedes hacer uso de las funciones <strong>strlen</strong> para contar el número de caracteres en una cadena</small></p>
+						<a href="ejercicios/02-intro-a-php/formularios/solucion.html">Solución</a> / 
+						<a href="ejercicios/02-intro-a-php/formularios/solucion.php">Archivo PHP</a>
+					</section>
 				</section>
 
 				<section>
 					<h2>Clases</h2>
+					<section>
+						<p>La programación orientada a objetos es un paradigma que puede complicarse muchísimo</p>
+						<p>A lo largo del curso utilizaremos clases y objetos de una forma básica.</p>
+						<p>Una clase es <strong>un contenedor de propiedades y métodos (funciones) relacionados entre si</strong></p>
+					</section>
+					<section>
+						<p>Ejemplo de una clase persona:</p>
+						<pre><code>
+&lt;?php  
+class Persona {
+    public $nombre;
+    public $edad;
+ 
+    public function __construct($nombre, $edad) {
+        $this->nombre = $nombre;
+        $this->edad = $edad;
+    }
+}
+</code></pre>
+						<p>La función <code>__construct()</code> (método cuando hablamos de clases) se le llama <strong>método mágico</strong> y será ejecutado siempre que instanciamos dicha clase.</p>
+					</section>
+					<section>
+						<h3>Instanciando una clase</h3>
+						<pre><code> $yo = new Persona( 'Ignacio', 33 ); </code></pre>
+						<p>Esto crea una <strong>instancia</strong> de la clase <code>Persona</code> que se guarda en la variable <code>$yo</code></p>
+					</section>
+					<section>
+						<p>Nada nos impide ahora crear múltiples instancias de esta clase, de hecho, lo haremos muy a menudo. La clase es simplemente la plantilla para crear distintas personas.</p>
+<pre><code>$yo = new Persona( 'Ignacio', 33 );
+$ella = new Persona( 'Lucía', 32 ); </code></pre>
+					</section>
+					<section>
+						<p>Pero la clase hasta ahora no es demasiado útil. Probemos a añadir alguna función de utilidad.</p>
+						<pre><code>&lt;?php
+class Persona {
+    public $nombre;
+    public $edad;
+    public $hermano;
+ 
+    public function __construct($nombre, $edad) {
+        $this->nombre = $nombre;
+        $this->edad = $edad;
+    }
+    public function set_hermano( $hermano ) {
+	$this->hermano = $hermano;
+    }
+}
+</code></pre>
+						<p>Ahora podemos relacionar a dos personas por un parentesco</p>
+					</section>
+					<section>
+<pre><code>&lt;?php
+$yo = new Persona( 'Ignacio', 34 );
+$mi_hermano = new Persona( 'Alejandro', 31 );
+
+$yo->set_hermano( $hermano );
+
+echo "El hermano de " . $yo->nombre . " es " . $yo->hermano->nombre;
+</code></pre>						
+					</section>
+					<section>
+						<p>El resultado a la sentencia anterior es:</p>
+						<p><code>El hermano de Ignacio es Alejandro</code></p>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Definir una clase Post con los siguientes atributos:</p>
+						<ul>
+							<li>post_title: Define el título de un post (público)</li>
+							<li>post_content: Define el contenido de un post (privado)</li>
+							<li>ID: Define la ID del post. Debe ser numérico (público)</li>
+							<li>El constructor de la clase debe recibir como parámetro la ID del post y el título.</li>
+							<li>Crea un objeto basándote en dicha clase.</li>
+							<li>Asígnale un contenido y muéstra por pantalla el título y el contenido del post.</li>
+						</ul>
+						<a href="ejercicios/02-intro-a-php/clases/solucion.html">Solución</a> / 
+						<a href="ejercicios/02-intro-a-php/clases/solucion.php">Archivo PHP</a>
+					</section>
+
 				</section>
-
-				<section>
-					<h2>HTTP Básico</h2>
-				</section>
-
-				<section>
-					<h2>Ejercicio</h2>
-				</section>
-
-
 
 			</div>
 

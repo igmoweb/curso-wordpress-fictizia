@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>Introducción a WordPress y MySQL</h1>
+				</section>
+				<section>
+					<p><strong>W</strong>ord<strong>P</strong>ress</p> no es wordpress ni Wordpress.
+					<img src="img/logo-comparison.png" alt="">
+				</section>
+
+				<section>
+					<h2>WordPress Codex</h2>
+					<p>Es el recurso principal para desarrolladores. En él encontramos referencias de muchas de las funciones, filtros, acciones y guías de desarrollo. </p>
+					<a href="http://codex.wordpress.org/">http://codex.wordpress.org/</a>
+				</section>
+
+				<section>
+					<h2>Instalación y configuración de WordPress</h2>
+					<section>
+						
+						<ul>
+							<li>Herramienta que usaremos: MAMP. MAMP instala un servidor local de desarrollo.</li>
+							<li>Incluye los siguientes módulos:</li>
+						</ul>
+						<img src="img/apache.png" alt="">
+						<img src="img/mysql.png" alt="">
+						<img src="img/php.png" alt="">
+					</section>
+					<section>
+						<p>Antes de empezar tenemos que descargar WordPress en nuestro servidor local (carpeta wordpress, por ejemplo)</p>
+						<ol>
+							<li>Arrancamos MAMP y los servidores. Con esto activamos todo el entorno.</li>
+							<li>Creamos una Base de Datos para nuestra instalación: localhost:8888/phpMyAdmin</li>
+							<li>Iniciamos la instalación de WordPress: localhost:8888/wordpress</li>
+						</ol>
+					</section>
+					<section>
+						<h3>La Base de Datos de WordPress</h3>
+						<ul>
+							<li><strong>wp_posts, wp_postmeta</strong>: Guarda la información de todos los posts y sus metadatos.</li>
+							<li><strong>wp_comments y wp_commentmeta</strong>: Guarda la información de todos los comentarios y sus metadatos.</li>
+							<li><strong>wp_users y wp_usermeta</strong>: Guarda la información de los usuarios y sus metadatos.</li>
+						</ul>
+					</section>
+					<section>
+						<br><br>
+						<ul>
+							<li><strong>wp_links</strong>: En desuso. Guarda la información sobre el listado de links. Se mantiene por retrocompatibilidad.</li>
+							<li><strong>wp_terms, wp_terms_taxonomy, wp_terms_relationships</strong>: Guarda toda la información sobre taxonomías (pueden ser las que vienen por defecto como categorías y etiquetas o taxonomías propias), sus relaciones con los posts y los términos de dichas taxonomías.</li>
+							<li><strong>wp_options</strong>: Guarda toda la información necesaria de configuración. Los temas y plugins suelen guardar información en esta tabla.</li>
+						</ul>
+					</section>
+					<section>
+						<br><br>
+						<ul>
+							<li>WordPress es un sistema basado en Base de Datos: <strong>PRÁCTICAMENTE TODA LA INFORMACIÓN</strong> se encuentra en ella</li>
+							<li>Cualquier cosa que deba ser persistente en el tiempo debemos guardarla en las tablas que más se ajusten a dicho tipo de información (wp_options para los temas normalmente y tablas propias para los plugins).</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Un momento, ¿Qué es una tabla?</h2>
+						<p>Una colección de datos con una estructura definida. Las columnas se llaman campos y las filas, registros</p>
+					</section>
+					<section>
+						<h2>Un momento, ¿Qué es una tabla?</h2>
+						<p>Ya, ahá, entonces ¿Qué es una tabla? Lo vemos con un ejemplo.</p>
+						<img src="img/tabla0201.jpg" alt="">
+					</section>
+					<section>
+						<h3>Creación de una tabla</h3>
+						<pre><code>
+CREATE TABLE `interpretes` (
+`id_interprete` int(10) NOT NULL AUTO_INCREMENT,
+`apellidos` varchar(200) NOT NULL,
+`nombre` varchar(200) NOT NULL,
+`nacionalidad` varchar(200) NOT NULL,
+PRIMARY KEY (`id_interprete`)
+						);
+						</code></pre>
+					</section>
+					<section>
+						<h3>Insertar datos en una tabla</h3>
+<pre><code>INSERT INTO interpretes
+(apellidos, nombre, nacionalidad)
+VALUES
+('Cruz', 'Ignacio', 'España' );
+
+// También inserciones múltiples
+INSERT INTO interpretes
+(apellidos, nombre, nacionalidad)
+VALUES
+('Kubrick', 'Stanley', 'EEUU' ),
+('Hitchcock', 'Alfred', 'Reino Unido' );
+						</code></pre>
+					</section>
+					<section>
+						<br><br>
+						<h3>Seleccionar datos de una tabla</h3>
+						<pre><code>
+// Selecciona todas las filas con todos los campos
+SELECT * FROM interpretes;
+
+// Selecciona todos los apellidos de la tabla
+SELECT apellidos FROM interpretes;
+
+// Selecciona sólo dos apellidos de la tabla
+SELECT apellidos FROM interpretes LIMIT 2;
+
+// Selecciona los apellidos que sean Cruz (No hace distinción de mayúsculas)
+SELECT apellidos FROM interpretes WHERE apellidos = 'cruz';
+
+// Selecciona los intérpretes cuyos apellidos contengan “u”
+SELECT * FROM interpretes WHERE apellidos LIKE '%u%';
+						</code></pre>
+					</section>
+					<section>
+						<br><br>
+						<h3>Actualizando datos de una tabla</h3>
+						<pre><code>
+// Actualiza mis apellidos
+UPDATE interpretes SET apellidos = 'Cruz Moreno' WHERE apellidos = 'Cruz';
+						</code></pre>
+					</section>
+					<section>
+						<h3>Borrando datos de una tabla</h3>
+						<pre><code>
+// Me borran de la tabla :(
+DELETE FROM interpretes WHERE nombre = 'Ignacio';
+
+// Borrado de toda la tabla
+DELETE FROM interpretes;
+
+// Tirando la tabla a la basura
+DROP TABLE interpretes;
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<h2>Un vistazo a la tabla wp_posts</h2>
+					<section>
+						<p>La tabla <code>wp_posts</code> es donde WordPress guarda toda la información relativa a los posts, páginas y tipos de posts personalizados en el sitio. Cada post tiene una ID propia, además de tener asociado un ID de usuario (su autor).</p>
+						<p>Un post en WordPress tiene distintos campos que le definen: ID, autor, fecha de creación, fecha de modificación, contenido, título, extracto...</p>
+						
+					</section>
+					<section>
+						<ul>
+							<li><strong>ID</strong>: Número de identificación del post</li>
+							<li><strong>post_author</strong>: ID del usuario que ha creado dicho post (la información de dicho usuario se guarda en wp_users)</li>
+							<li><strong>post_date</strong>, post_date_gmt: Fechas de creación del post</li>
+							<li><strong>post_content</strong>, post_title, post_excerpt: Contenido, título y extracto del post.</li>
+							<li><strong>comment_status</strong>, ping_status (open/close): Si el post admite comentarios o pings o no.</li>
+							<li><strong>post_password</strong>: Contraseña si el post es privado.</li>
+							<li><strong>post_name</strong>: Identificador único alfanumérico del post. También llamado slug.</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li><strong>post_modified</strong>, post_modified_gmt: Fechas de la última modificación del post.</li>
+							<li><strong>post_parent</strong>: ID del post padre. Los posts no son jerárquicos pero las páginas sí.</li>
+							<li><strong>Guid</strong>: URL del post.</li>
+							<li><strong>menu_order</strong>: Útil para tipos de posts jerárquicos como las páginas.</li>
+							<li><strong>post_type</strong>: Tipo de post. Los básicos son post, page, attachment, revision, nav_menu_item pero veremos cómo se pueden crear más tipos.</li>
+							<li><strong>post_mime_type</strong>: Sólo para tipos de post attachment, puede ser image/jpg, image/png, video/mp4...</li>
+							<li><strong>comment_count</strong>: Número de comentarios del post.</li>
+						</ul>
+					</section>
+				</section>
+				<section class="alignleft">
+					<h2>Ejercicio</h2>
+					<section>
+						<p class="alignleft">Inserta un nuevo post en la tabla wp_posts</p>
+						<ul>
+							<li>Contenido: Mi contenido no es gran cosa</li>
+							<li>Título: Estamos de curso</li>
+							<li>ID del autor: 1</li>
+						</ul>
+						<p class="alignleft">Selecciona todas las filas de wp_posts.</p>
+						<p class="alignleft">Selecciona mediante una claúsula WHERE sólo el post que hemos creado.</p>
+					</section>
+					<section>
+						<p class="alignleft">Ahora inserta en la tabla wp_postmeta un nuevo metadato para dicho post:</p>
+						<ul>
+							<li>meta_key: 'mi_metadato'</li>
+							<li>meta_value: 'Mi valor'</li>
+							<li>post_id: La ID del post creado.</li>
+						</ul>
+						<p><a href="ejercicios/03-intro-a-wp/mysql/solucion.html">Solución</a></p>
+					</section>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

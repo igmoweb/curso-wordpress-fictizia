@@ -1,0 +1,12 @@
+<pre><code>
+INSERT INTO wp_posts
+(post_author,post_content,post_title)
+VALUES (1,'Mi contenido no es gran cosa', 'Estamos de curso');
+
+SELECT * FROM wp_posts;
+
+SELECT * FROM wp_posts WHERE post_title = 'Estamos de curso';
+
+INSERT INTO wp_postmeta ( post_id, meta_key, meta_value )
+VALUES (1, 'mi_metadato', 'Mi valor' );
+</code></pre>

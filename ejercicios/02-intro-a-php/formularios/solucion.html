@@ -1,0 +1,22 @@
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;Envio de formularios&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;?php if ( isset( $_POST['submit'] ) ): ?&gt;
+		&lt;?php echo strlen( $_POST['nombre'] ) ?&gt;&lt;br/&gt;
+		&lt;?php echo ( $_POST['sexo'] == 'h' ) ? 'Hombre' : 'Mujer'; ?&gt;
+	&lt;?php endif; ?&gt;
+
+	&lt;form action=&quot;&quot; method=&quot;POST&quot;&gt;
+		Nombre: &lt;input type=&quot;text&quot; name=&quot;nombre&quot; value=&quot;&quot; /&gt;&lt;br/&gt;
+		Sexo: &lt;br/&gt;
+			&lt;input type=&quot;radio&quot; name=&quot;sexo&quot; value=&quot;h&quot; /&gt;Hombre&lt;br/&gt;
+			&lt;input type=&quot;radio&quot; name=&quot;sexo&quot; value=&quot;m&quot; /&gt;Mujer&lt;br/&gt;
+		&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Enviar&quot; /&gt;
+	&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>

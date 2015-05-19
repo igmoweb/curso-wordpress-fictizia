@@ -1,0 +1,24 @@
+<pre>
+&lt;?php
+
+class Post {
+	public $post_title;
+	public $post_content;
+	public $ID;
+
+	public function __construct( $ID, $title ) {
+		$this-&gt;post_title = $title;
+		$this-&gt;ID = $ID;
+	}
+
+}
+
+$post = new Post( 5, 'Un post' );
+$post-&gt;post_content = 'El contenido';
+
+?&gt;
+&lt;h1&gt;&lt;?php echo $post-&gt;post_title; ?&gt;&lt;/h1&gt;
+&lt;div&gt;
+	&lt;?php echo $post-&gt;post_content; ?&gt;
+&lt;/div&gt;
+</pre>
