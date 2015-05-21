@@ -43,13 +43,219 @@
 
 				<section>
 					<h1>Conceptos Básicos de WordPress</h1>
-				</section>				
+				</section>	
+
+				<section>
+					<h2>Estructura de una instalación de WordPress</h2>
+					<ul>
+						<li><strong>wp-content</strong>: Donde se guardan los Themes, Plugins y cargas de imágenes así como archivos de traducción.</li>
+						<li><strong>wp-admin</strong>: Sólo se carga cuando entramos en el panel de administración.</li>
+						<li><strong>wp-includes</strong>: Ficheros comunes tanto para el Front como para el Backend</li>
+					</ul>
+					
+					<p>El fichero donde empieza todo: <code>index.php</code></p>
+					<p>El fichero que lo carga todo: <code>wp-settings.php</code></p>
+				</section>		
+				
+				<section>
+					<h2>Enlaces Permanentes o Permalinks</h2>
+					<section>
+						<p>Los <i>Permalinks</i> son URLs permanentes a los posts del sitio, al listado de posts por categorías, archivos, autores, etc.</p>
+						<p>La URL a cada post no debería cambiar, por eso son permanentes.</p>
+					</section>
+					<section>
+						<p>Los Permalinks por defecto son "feos"</p>
+						<code>http://example.com/?p=10</code>
+						<p><small>Carga el post con ID = 10</small></p>
+					</section>
+					<section>
+					<br><br>
+						<p>Usando el <i>mod_rewrite</i>, un módulo que suele venir por defecto en todos los servidores, podemos transformarlos en Permalinks "bonitos" llamados <i>Pretty Permalinks</i></p>
+						<code>http://example.com/2012/post-name/</code>
+						<p><small>Carga el post con <i>slug</i> post-name, publicado en el 2012</small></p>
+
+						<code>http://example.com/2012/12/30/post-name</code>
+						<p><small>Carga el post con <i>slug</i> post-name, publicado en el 30/12/2012</small></p>
+
+						<p>Los Permalinks se pueden ajustar en <code>Ajustes>Enlaces Permanentes</code></p>
+					</section>
+					<section>
+						<br><br>
+						<h3>El fichero .htaccess</h3>
+						<p>Cuando elegimos una estructura "Pretty Permalinks" WordPress genera un archivo <code>.htaccess</code> que incluye las reglas para los Permalinks y que el servidor se encarga de leer para redirigir a un sitio o a otro.</p>
+<pre><code><IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+</code></pre>
+					</section>
+				</section>	
+
+				<section>
+					<h2>Carga y parseado de URLs en WordPress</h2>
+					<section>
+					<br><br>
+						<p>1. Cuando un visitante escribe una URL, WordPress ejecuta unos pocos archivos de carga (<i>index.php, wp-config.php, wp-settings.php...</i>)</p>
+						<p>2. Carga los plugins que estén activados</p>
+						<p>3. Carga de los archivos de internacionalización.</p>
+						<p>4. Carga el archivo <i>functions.php</i> del Theme del sitio</p>
+						<p>5. Se instancia el objeto <i>WP_Query</i> y Se produce el parseo de la URL</p>
+						<p>6. Carga el fichero correspondiente de nuestro Theme</p>
+					</section>
+					<section>
+						<h3>Parseo de la URL</h3>
+						<p>A) A partir de un análisis de las variables en la URL WordPress detecta qué página/post debe cargar.</p>
+						<p>B) A partir del análisis, forma una query en MySQL y la ejecuta para obtener la lista de posts. Guarda el resultado en <code>$wp_query</code>.</p>
+						<p>C) Envía las <strong>cabeceras HTTP</strong> del Response</p>
+					</section>
+
+				</section>	
+
+				<section>
+					<h2>El archivo wp-config.php</h2>
+					<p>Este fichero contiene toda la configuración necesaria para que WordPress arranque:</p>
+					<ul>
+						<li>Usuario/pass de la Base de Datos.</li>
+						<li>Salts de seguridad.</li>
+						<li>El prefijo de las tablas</li>
+						<li>Constante para hacer debug y que salgan errores (nunca utilizar en un servidor de producción)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Hooks</h2>
+
+					<section>
+					<br>
+						<p>Es la forma de extender WordPress y de modificar su comportamiento.</p>
+						<ul>
+							<li>Tocar el núcleo de WordPress no es la solución ya que cuando actualizamos perderíamos nuestro código</li>
+							<li>La solución pasa por extender la funcionalidad de WordPress mediante plugins o temas.</li>
+						</ul>
+						<p>Existen dos tipos primarios de Hooks:</p>
+						<ul>
+							<li><strong>Actions</strong>: Permiten ejecutar un trozo de código en cierto punto durante la carga de WordPress</li>
+							<li><strong>Filters</strong>: Permite manipular un valor (array, entero, cadena) en cierto punto durante la ejecución de WordPress.</li>
+						</ul>
+					</section>
+					<section>
+					<br><br>
+						<h3>Actions</h3>
+						<p>WordPress está repleto de actions y se identifican por la siguiente sintaxis:</p>
+						<pre><code>&lt;?php do_action( 'nombre_del_action', $parametro1, $parametro2... ); ?&gt; </code></pre>
+						
+						<p><strong>Ejemplo</strong>: wp-settings.php contiene los actions que se ejecutan al inicio de la carga: <i>plugins_loaded, setup_theme, after_setup_theme, init</i> entre otros.</p>
+						
+						<p>¿Cómo usar un action?</p>
+						<pre><code>&lt;?php add_action( 'nombre_del_action', 'nombre_de_una_funcion_que_queremos_ejecutar', $prioridad, $num_de_argumentos ); ?&gt; </code></pre>
+					</section>
+					<section>
+						<h3>Ejemplo de action</h3>
+						<p>Usaremos el action wp_footer, que se ejecuta en el front-end y suele hacerlo justo antes de cerrar el tag &lt;body&gt;. Añadiremos un mensaje en el pie de página.</p>
+						<pre><code>&lt;?php
+add_action( 'wp_footer', 'fictizia_footer_message' );
+function fictizia_footer_message() {
+	echo 'Esto es un mensaje que quiero poner en el pie de p&aacute;gina';
+}</code></pre>
+
+					</section>
+					<section>
+						<h3 class="alignleft">Ejercicio</h3>
+						<ul>
+							<li>Queremos que cuando WordPress se inicie, si existe un parámetro en la URL llamado <strong>'muere'</strong> y además es igual a <strong>'si'</strong>, WordPress detenga su ejecución mediante un mensaje. Recuerda que dicho parámetro se encuentra en <strong>$_GET['muere']</strong></li>
+							<li>Hay que utilizar el action <code>init</code> y la función <code>wp_die( 'mensaje' )</code> que acepta un parámetro $mensaje. Esta función detiene WordPress y saca por pantalla dicho mensaje.</li>
+							<li>Haz lo mismo usando el action <code>get_footer</code>. ¿Qué diferencia hay entre hacerlo en 'init' y 'get_footer'?</li>
+						</ul>
+						<a href="ejercicios/04-conceptos-basicos/actions/solucion.html">Solución</a> / 
+						<a href="ejercicios/04-conceptos-basicos/actions/solucion.php">Archivo PHP</a>
+					</section>
+					<section>
+						<h3>Actions comunes</h3>
+						<ul>
+							<li>plugins_loaded</li>
+							<li>init</li>
+							<li>admin_menu</li>
+							<li>template_redirect</li>
+							<li>wp_head</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Filters</h3>
+						<ul>
+							<li>Ayudan a manipular valores durante la ejecución del núcleo de WordPress.</li>
+							<li>Se identifican por la siguiente sintaxis:</li>
+						</ul>
+						<pre><code>&lt;?php $nuevo_valor = apply_filters( 'nombre_del_filter', $valor ); ?&gt;</code></pre>
+					</section>
+					<section>
+						<h3>Ejemplo de filter</h3>
+						<p>wp_title es el filtro responsable del valor de &lt;title&gt; en la cabecera de nuestra página. Podemos pasar a nuestra función hasta 3 parámetros.</p>
+						<p>La definición es la siguiente:</p>
+						<pre><code>&lt;?php $title = apply_filters( 'wp_title', $title, $sep, $seplocation ); ?&lt;</code></pre>
+					</section>
+					<section>
+						<h3>Ejemplo de filter</h3>
+						<p>Para modificar dicho título:</p>
+<pre><code>
+add_filter( 'wp_title', 'fictizia_modifica_titulo', 10, 3 );
+function fictizia_modifica_titulo( $titulo, $sep, $seplocation ) {
+	$name = get_bloginfo( 'name' );
+	$titulo .= $sep . ' ' . $name;
+	return $titulo;
+}
+</code></pre>
+					</section>
+					<section>
+						<h3 class="alignleft">Ejercicio</h3>
+							<p><code>show_admin_bar</code> es un filtro que permite mostrar u ocultar la barra superior de administración mientras estamos en el frontend (no en la zona de administración) Vamos a quitarla.</p>
+							<p>La definición es <code>$show_admin_bar = apply_filters( 'show_admin_bar', $show_admin_bar );</code> donde <code>$show_admin_bar</code> es un valor booleano (true para mostrarla y false para quitarla)</p>
+						<ul>
+						<li>Haz desaparecer dicha barra.</li>
+						</ul>
+						<p>
+						<a href="ejercicios/04-conceptos-basicos/filters/solucion.html">Solución</a> / 
+						<a href="ejercicios/04-conceptos-basicos/filters/solucion.php">Archivo PHP</a>
+						</p>
+					</section>
+				</section>
+				<section>
+					<h2>Internacionalización</h2>
+					<section>
+						<p>Para que nuestro tema o plugin sea traducible a otros idiomas no podemos hacer esto:</p>
+<pre><code>&lt;div&gt;
+&lt;p&gt;&lt;?php echo 'Esto es un p&aacute;rrafo'; ?&gt;&lt;/p&gt;
+&lt;p&gt;Esto es otro p&aacute;rrafo&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+						<p>WordPress no sabe que esas sentencias son traducibles y las sacará tal cual en cualquier idioma.</p>
+						<p>Para ello hay que hacer uso de las funciones de internacionalización</p>
+					</section>
+					<section>
+						<h3>Funciones de Internacionalización</h3>
+						<ul>
+							<li><code>__( $cadena, $dominio )</code>: Devuelve la cadena traducida si el paquete de idiomas se ha encontrado.</li>
+							<li><code>_e( $cadena, $dominio)</code>: Saca por pantalla la cadena traducida si se ha encontrado el paquete de idiomas</li>
+							<li><code>_e( $cadena, $dominio )</code> es lo mismo que <code>echo __( $cadena, $dominio )</code></li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Hay que acostumbrarse a <u>usar permanentemente estas funciones</u> cada vez que se quiera sacar algo por pantalla. Pero no todo vale: el contenido de los posts o los títulos no hay que pasarlos por las funciones ya que el contenido del blog es distinto en cada instalación</li>
+							<li>Sólo hay que <u>utilizarlas para aquello que no varíe</u> en nuestro tema/plugin de una instalación a otra.</li>
+							<li>Más adelante veremos cómo usarlas y cómo crear nuestro paquete de idiomas en un tema.</li>
+						</ul>
+					</section>
+				</section>
 
 			</div>
 
 			<div class="header">
-	           		<a href="index.html">Índice</a>
-	         	</div>
+           		<a href="index.html">Índice</a>
+         	</div>
 
 		</div>
 

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>Introducción a los Themes</h1>
+				</section>	
+				<section>
+					<h2>Estructura de archivos de un tema</h2>
+					<li>Como ejemplo podemos mirar el tema Twenty Twelve y toda su estructura de archivos.</li>
+					<li>Para saber qué archivo tiene que cargar WordPress tenemos el siguiente enlace como referencia: <a href="http://codex.wordpress.org/Template_Hierarchy">http://codex.wordpress.org/Template_Hierarchy</a>. </li>
+					<li>Todos los Temas deben contener como mínimo un <code>style.css</code> y un <code>functions.php</code></li>
+				</section>
+				<section>
+					<h2>Planificando en base al diseño</h2>
+					<section>
+						<ul>
+							<li>Se trata más bien de algo personal pero más o menos la estructura en un archivo .psd puede estar bastante bien definida </li>
+							<li>Se puede hacer algo simple como <a href="http://wp-themes.com/contango/?TB_iframe=true&width=600&height=400">http://wp-themes.com/contango/?TB_iframe=true&width=600&height=400</a> donde la cabecera, pie y barra lateral están muy bien definidas</li>
+							<li>O algo ligeramente más complicado como <a href="http://themeforest.net/item/hoarder-responsive-wordpress-blog-theme/full_screen_preview/2919551">http://themeforest.net/item/hoarder-responsive-wordpress-blog-theme/full_screen_preview/2919551</a> donde la estructura del blog es más complicada</li>
+						</ul>
+					</section>
+					<section>
+					<ul>
+						<li>Hasta algo como <a href="http://crystal.wowothemes.com/home-agency/">http://crystal.wowothemes.com/home-agency/</a> muy difícil de conseguir sin un buen framework de CSS detrás. Pero incluso así sabemos dónde está la cabecera, el pie y zonas de widgets</li>
+					</ul>
+				</section>
+				</section>
+				
+				<section>
+					<h2>Temas Hijo</h2>
+					<section>
+						<ul>
+							<li>La mejor forma de modificar un tema es usando temas hijos</li>
+							<li>No todos los temas están adaptados para ser padres de otros temas</li>
+							<li>Un tema hijo hereda todas las propiedades del tema padre</li>
+							<li>Para crear un tema hijo creamos una <u>carpeta nueva en wp-content/themes y un fichero CSS nuevo llamado style.css</u> con la siguiente información:</li>
+						</ul>
+					</section>
+					<section>
+					<pre><code>&lt;?php
+/*
+Theme Name: Twenty Fourteen Child
+Theme URI: http://example.com/twenty-fourteen-child/
+Description: Twenty Fourteen Child Theme
+Author: John Doe
+Author URI: http://example.com
+Template: twentyfourteen
+Version: 1.0.0
+Tags: light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
+Text Domain: twenty-fourteen-child
+*/
+</code></pre>
+				</section>
+				<section>
+					<p>Además debemos añadir la hoja de estilos CSS del Tema padre. <u>Tendremos que crear el fichero functions.php</u></p>
+<pre><code>&lt;?php
+add_action( 'wp_enqueue_scripts', 'fictizia_enqueue_styles' );
+function fictizia_enqueue_styles() {
+    wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
+
+}
+</code></pre>
+					<p>Más adelante veremos cómo funciona exactamente esta función</p>
+				</section>
+				<section>
+					<p>A partir de aquí podemos crear nuestras propias reglas CSS o modificar archivos del tema padre. Los archivos del tema hijo tendrán preferencia sobre los del padre.</p>
+					<p>La gran ventaja es que podremos actualizar el tema padre sin perder ningún cambio.</p>
+				</section>
+				<section>
+					<h2>Ejercicio</h2>
+					<p>Crea un Tema Hijo de Twenty Fifteen y cámbiale el color de fondo</p>
+				</section>
+			</section>
+				
+
+
+
+
+				
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,11 @@
+<pre>
+&lt;?php
+
+add_action( 'init', 'fictizia_muere' );
+add_action( 'get_footer', 'fictizia_muere' );
+function fictizia_muere() {
+	if ( isset( $_GET['muere'] ) &amp;&amp; $_GET['muere'] == 'si' ) {
+		wp_die( &quot;MUERE&quot; );
+	}
+}
+</pre>
