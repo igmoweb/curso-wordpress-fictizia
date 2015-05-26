@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>Maquetando un Tema desde cero</h1>
+				</section>	
+				
+
+				<section>
+					<h2>Anatomía de un Tema</h2>
+					<section>
+						<br><br>
+						<h3>style.css, la hoja de estilos</h3>
+						<p>Controla la presentación visual de la página</p>
+						<p>Además de contener las reglas CSS, <code>style.css</code> debe proveer detalles del Tema en forma de comentarios</p>
+	<pre><code>
+	/*
+	Theme Name: Twenty Fifteen
+	Theme URI: https://wordpress.org/themes/twentyfifteen
+	Author: the WordPress team
+	Author URI: https://wordpress.org/
+	Description: Our 2015 default theme is clean, blog-focused, and designed for clarity. Twenty Fifteen's simple, straightforward typography is readable on a wide variety of screen sizes, and suitable for multiple languages. We designed it using a mobile-first approach, meaning your content takes center-stage, regardless of whether your visitors arrive by smartphone, tablet, laptop, or desktop computer.
+	Version: 1.0
+	License: GNU General Public License v2 or later
+	License URI: http://www.gnu.org/licenses/gpl-2.0.html
+	Tags: black, blue, gray, pink, purple, white, yellow, dark, light, two-columns, left-sidebar, fixed-layout, responsive-layout, accessibility-ready, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, microformats, post-formats, rtl-language-support, sticky-post, threaded-comments, translation-ready
+	Text Domain: twentyfifteen
+	*/
+	</code></pre>
+					</section>
+
+					<section>
+						<h3>Ficheros de plantillas</h3>
+						<p>Controlan la manera en la que el Tema muestra la información</p>
+						<p>Hay muchas distintas: <i>index.php, home.php, category.php, single.php, page.php...</i> en las que profundizaremos más adelante </p>
+						<p>La que se carga por defecto siempre es <code>index.php</code>, que es la que por el momento utilizaremos para luego ir partiéndola en trozos</p>
+					</section>
+
+					<section>
+						<h3>Fichero (opcional) functions.php</h3>
+						<p>Este fichero actúa básicamente como un plugin y se carga automáticamente durante la inicialización de WordPress</p>
+						<p>Sirve para varios propósitos</p>
+						<ul>
+							<li>"Encolar" hojas de estilos y Javascript</li>
+							<li>Habilitar características del Tema como Menús de navegación, Sidebars, Imágenes destacadas...</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Cabecera y menús</h2>
+					<section>
+						<ul>
+							<li>El set de caracteres: <code>bloginfo( 'charset' )</code></li>
+							<li>El título de la página: <code>wp_title( $sep, $display, $seplocation )</code></li>
+							<li>Atributos del lenguaje: <code>language_attributes()</code></li>
+							<li>Pingback URL: <code>bloginfo( 'pingback_url' )</code></li>
+							<li>Carga de la cabecera de WP: <code>wp_head()</code> (Requerido para todos los Temas)</li>
+							<li>Clases del &lt;body&gt;: <code>body_class()</code></li>
+						</ul>
+					</section>
+					<section>
+						<p>Para poder mostrar un menú se necesita registrar las localizaciones del menú usando <code>register_nav_menu</code> en <i>functions.php</i></p>
+						<pre><code>&lt;?php
+function fictizia_setup() {
+	register_nav_menu( 'primary', __( 'Primary Menu', 'fictizia' ) );
+}
+add_action( 'after_setup_theme', 'fictizia_setup' );</code></pre>
+
+						<p>Una vez registrado podremos llamar al menú desde donde queramos usando la función <code>wp_nav_menu</code><br/>(<a href="https://codex.wordpress.org/Function_Reference/wp_nav_menu">https://codex.wordpress.org/Function_Reference/wp_nav_menu</a>)</p>
+					</section>
+
+					<section>
+					<br><br>
+						<h3>Estilos y Javascript</h3>
+						<p><i>style.css</i> (que es donde deberíamos meter todos nuestros estilos CSS) no se agrega automáticamente. Es necesario usar funciones nativas de WordPress para "encolarlo" dentro de &lt;head&gt;</p>
+						<p>Para encolar nuestra hoja de estilos, usamos el siguiente código en <i>functions.php</i>:</p>
+						<pre><code>
+function fictizia_scripts_styles() {
+	wp_enqueue_style( 'fictizia-style', get_stylesheet_uri() );
+}
+add_action( 'wp_enqueue_scripts', 'fictizia_scripts_styles' );
+</code></pre>
+					</section>
+					<section>
+						<p>Es más que recomendable usar este action y las funciones <code>wp_enqueue_style</code> y <code>wp_enqueue_script</code> para agregar todos los scripts/estilos necesarios para nuestra página.</p>
+					</section>
+
+				</section>
+
+				<section>
+					<h2>Pie de página</h2>
+					<p>Funciona de manera similar a la cabecera. Aunque sólo es necesario llamar a <code>wp_footer()</code> en este caso.</p>
+				</section>
+
+				<section>
+					<h2>Contenido</h2>
+					<p>El contenido se debe manejar mediante <code>The Loop</code>, que estudiaremos más adelante</p>
+				</section>
+
+				<section>
+					<h2>Sidebars</h2>
+					<section>
+					<br><br>
+						<p>De manera similar a los menús, las sidebars hay que registrarlas y luego llamarlas mediante una serie de funciones.</p>
+						<p>Para registrar una sidebar:</p>
+						<pre><code>
+function fictizia_widgets_init() {
+	register_sidebar( array(
+		'name' =&gt; __( 'Main Sidebar', 'fictizia' ),
+		'id' =&gt; 'sidebar-1',
+		'description' =&gt; __( 'Appears on posts and pages except the optional Front Page template, which has its own widgets', 'fictizia' ),
+		'before_widget' =&gt; '&lt;aside id=&quot;%1$s&quot; class=&quot;widget %2$s&quot;&gt;',
+		'after_widget' =&gt; '&lt;/aside&gt;',
+		'before_title' =&gt; '&lt;h3 class=&quot;widget-title&quot;&gt;',
+		'after_title' =&gt; '&lt;/h3&gt;',
+	) );
+}
+add_action( 'widgets_init', 'fictizia_widgets_init' );
+						</code></pre>
+					</section>
+					<section>
+						<p>Para sacarlas por pantalla se debe hacer uso de tres funciones:</p>
+						<ul>
+							<li><code>get_sidebar();</code> A la que llamamos desde nuestro index.php. Esta función llamará a su vez al fichero <i>sidebar.php</i> (que tenemos que crear).</li>
+							<li><code>is_active_sidebar( $sidebar_id ):</code> Que devuelve true/false si la sidebar tiene o no widgets agregados.</li>
+							<li><code>dynamic_sidebar( $sidebar_id )</code>: Que muestra la sidebar.</li>
+						</ul>
+					</section>
+				</section>
+
+			</section>
+				
+
+
+
+
+				
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
