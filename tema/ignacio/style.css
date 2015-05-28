@@ -110,3 +110,30 @@ nav#menu > .menu > ul > li > .children {
 nav#menu > .menu > ul > li:hover > .children {
 	display:block;
 }
+
+h1 {
+	font-size: 30px;
+}
+h2 {
+	font-size:24px;
+}
+
+#inner-content .post {
+	padding-bottom:15px;
+	margin-bottom:15px;
+	border-bottom:1px solid #DEDEDE;
+}
+
+#inner-content .post .post-footer {
+	margin-top:15px;
+}
+
+.meta a {
+	color:#444;
+	border: 1px solid #ABABAB;
+	padding: 5px 3px;
+}
+
+.meta {
+	font-style: italic;
+}
