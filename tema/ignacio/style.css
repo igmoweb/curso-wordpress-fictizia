@@ -1,0 +1,112 @@
+/*
+Theme Name: Ignacio
+Theme URI: 
+Description: 
+Author: Ignacio
+Author URI: http://www.yoururlhere.com
+Version: 1.0
+Tags: fluid-layout, responsive-layout, accessibility-ready, translation-ready, microformats, rtl-language-support
+*/
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+	border: 0;
+	font-family: inherit;
+	font-size: 100%;
+	font-style: inherit;
+	font-weight: inherit;
+	margin: 0;
+	outline: 0;
+	padding: 0;
+	vertical-align: baseline;
+}
+
+html {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	font-size: 62.5%;
+	overflow-y: scroll;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+*,
+*:before,
+*:after {
+	-webkit-box-sizing: inherit;
+	-moz-box-sizing: inherit;
+	box-sizing: inherit;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+	color: #333;
+	font-family: "Noto Serif", serif;
+	font-size: 15px;
+	font-size: 1.5rem;
+	line-height: 1.6;
+}
+
+
+#page {
+	width:960px;
+	margin:0 auto;
+}
+
+#header,
+#footer,
+#inner-content,
+#sidebar {
+	padding:20px;
+}
+
+#content:after {
+	display:table;
+	content:"";
+	clear:both;
+}
+
+#inner-content {
+	float:left;
+	width:70%;
+	background:#EEE;
+}
+
+
+
+#sidebar {
+	width:30%;
+	background:#BABABA;
+	float:left;
+}
+
+#header {
+	overflow:hidden;
+	background:#EEE;
+	margin-bottom:20px;
+}
+
+#footer {
+	background:#EEE;
+	margin-top:20px;
+}
+
+nav#menu li {
+	list-style:none;
+}
+
+nav#menu > .menu > ul > li {
+	float:left;
+	list-style: none;
+	margin-right:13px;
+}
+
+nav#menu > .menu > ul > li > .children {
+	display:none;
+}
+
+nav#menu > .menu > ul > li:hover > .children {
+	display:block;
+}
