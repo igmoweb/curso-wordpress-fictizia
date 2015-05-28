@@ -101,9 +101,9 @@ if ( have_posts() ) {
 				<section>
 					<h2>Template Tags</h2>
 					<section>
-						<p>Son las <u>funciones</u> que se usan dentro del Loop para mostrar contenido de los posts.</p>
+						<p>Son <u>funciones</u> que se usan en las plantillas para mostrar el contenido del blog.</p>
 						<p>Cada función se dedica a mostrar algo específico sobre el contenido</p>
-						<p>Hay funciones para mostrar el título, el enlace al post, el autor, la ID del post.</p>
+						<p>Hay funciones para mostrar el título, el enlace al post, el autor, la ID del post...</p>
 					</section>
 					<section>
 						<p>Ejemplos de Template Tags comúnmente utilizados:</p>
@@ -142,6 +142,99 @@ if ( have_posts() ) {
 	&lt;?php endwhile; ?&gt;
 &lt;?php endif; ?&gt;
 </code></pre>
+				</section>
+
+				<section>
+					<h2>Parámetros de los Template Tags</h2>
+					<section>
+						<br>
+						<p>Muchas de estas funciones permiten ciertos parámetros para personalizar la forma en la que el contenido es mostrado.</p>
+						<p>Por ejemplo, the_content() admite dos parámetros (opcionales):</p>
+						<pre><code>&lt;?php the_content( $more_link_text, $stripteaser ); ?&gt;</code></pre>
+						
+						<p>Mediante esta función mostramos el contenido del post pero cuando la etiqueta &lt;!--more--&gt; aparece en el post, WordPress añadirá automáticamente el texto de la variable $more_link_text (por ejemplo, “Seguir leyendo”).</p>
+						<p>El segundo parámetro permite excluir el texto antes de la etiqueta &lt;!--more--&gt; cuando mostramos el post entero (single post).</p>
+					</section>
+					<section>
+						<p>Otro ejemplo con the_title(), permite definir las etiquetas HTML con las que envolver el título:</p>
+						<pre><code>&lt;?php the_title( '&lt;h1&gt;', '&lt;/h1&gt;' ); ?&gt;</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<h2>Ejercicio</h2>
+					<section>
+						<p>Mostrar un Loop con una buena estructura HTML:</p>
+						<ul>
+							<li>Cada post debe ir encerrado en una etiqueta <code>&lt;article&gt;</code> con <code>id=&rdquo;post-[POST_ID]&rdquo;</code> (the_ID()). Utiliza tambi&eacute;n la funci&oacute;n <code>post_class();</code> para sacar el atributo class dentro de &lt;article&gt;</li>
+							<li>El t&iacute;tulo dentro de un &lt;h2&gt; (<code>the_title()</code>) dentro del cual tiene que ir un link al post (<code>the_permalink()</code>) y adem&aacute;s debe utilizar <code>the_title_attribute()</code> para el atributo title dentro del tag &lt;a&gt;</li>
+							<li>Muestra el contenido completo del post con <code>the_content()</code> dentro de un &lt;div class=&rdquo;entry-content&rdquo;&gt;</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Es necesario usar la funci&oacute;n <code>wp_link_pages()</code> que muestra la paginaci&oacute;n del post si &eacute;ste usa la etiqueta &lt;!--nextpage--&gt;&ndash; Dentro de otro &lt;div class=&rdquo;entry-meta&rdquo;&gt; se van a mostrar los siguientes datos:</li>
+							<li>Una lista de las categor&iacute;as del post, separadas por | (<code>the_category( $sep )</code>)</li>
+							<li>Una lista de los tags del post (<code>the_tags()</code>)</li>
+							<li>Un link al formulario de los comentarios (<code>comments_popup_link()</code>)</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Conditional Tags</h2>
+					<section>
+						<p>Son funciones que sirven para comprobar si una condición se cumple. Todas devuelven true o false</p>
+						<ul>
+							<li><strong>is_home()</strong>: Comprueba si estamos en la página principal del blog de nuestro sitio.</li>
+							<li><strong>is_front_page()</strong>: Comprueba si estamos en la página principal de nuestro sitio.</li>
+							<li><strong>is_admin()</strong>: Comprueba si estamos dentro del panel de administración</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li><strong>is_single()</strong>: Comprueba si estamos viendo un solo post. Devuelve false para las páginas</li>
+							<li><strong>is_sticky()</strong>: Comprueba si el post es destacado.</li>
+							<li><strong>is_page()</strong>: Comprueba si estamos viendo una página estática.– is_search(): Comprueba si estamos en la página de los resultados de la búsqueda.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Personalizando The Loop</h2>
+					<ul>
+						<li>Para modificar The Loop hay que hacer uso del objeto <code>$wp_query</code>, el cual guarda todos los posts que se van a mostrar además de muchísima otra información. Todos los Template Tags vistos, directa o indirectamente acceden a dicho objeto para sacar toda la información.</li>
+						<li>El objeto <code>$wp_query</code> pertenece a la clase <code>WP_Query</code>. Dicha clase nos permite hacer selecciones de post a la base de datos. WordPress crea $wp_query automáticamente y la declara como variable local pero nosotros podemos crear un objeto nuevo también.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Ejercicio</h2>
+					<section>
+						<ul>
+							<li>Vamos a crear un apartado de posts relacionados. Dicha lista s&oacute;lo debe aparecer cuando s&oacute;lo se muestra un &uacute;nico post (is_single()).</li>
+							<li>Habr&aacute; que mostrarlos ENCIMA el div.entry-meta. Crearemos uno nuevo para ello: &lt;ul class=&rdquo;related-posts&rdquo;&gt;&lt;/ul&gt;</li>
+							<li>Cada uno de los posts ir&aacute; dentro de un elemento lista &lt;li&gt;</li>
+							<li>Los posts relacionados se deben sacar a partir de una de las etiquetas del post principal. Si el post tiene muchas etiquetas lo mejor ser&aacute; coger una al azar. Para obtener una de dichas etiquetas usa el siguiente c&oacute;digo:</li>
+						</ul>
+					</section>
+					<section>
+<pre><code>$tags = get_the_tags();
+$rand_key = array_rand( $tags );
+$tag_id = $tags[ $rand_key ]-&gt;term_id;</code></pre>
+						<ul>
+							<li>Para los argumentos de WP_Query: Sacaremos 3 posts (posts_per_page =&gt; 3), ignorando los posts destacados (ignore_sticky_posts =&gt; true) con la ID de la categor&iacute;a que hayamos sacado al azar (tag_id =&gt; ID ).</li>
+							<li>Crearemos ahora un loop personalizado y sacaremos por pantalla el t&iacute;tulo dentro de cada elemento lista &lt;li&gt;</li>
+							<li>Intenta tambi&eacute;n excluir el post principal de los posts relacionados con get_the_ID() y el argumento para WP_Query post__not_in =&gt; array( ID )</li>
+						</ul>
+					</section>
+					<section>
+						<h3>¿Cuál es el problema con el código?</h3>
+						<ul>
+							<li>Al poner el div.entry-meta debajo de los posts relacionados, las etiquetas cambian en cada refresco porque está mostrando las etiquetas del último post relacionado que hemos sacado.</li>
+							<li>Para solucionar esto se utiliza <code>wp_reset_query()</code>. Esta función resetea la query y vuelve al estado anterior de empezar a iterar por nuestro Loop personalizado.</li>
+						</ul>
+					</section>
 				</section>
 
 				
