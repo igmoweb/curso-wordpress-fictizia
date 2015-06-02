@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+	
+
+				<section>
+					<h1>Mostrando el Contenido</h1>
+				</section>				
+				
+
+				<section>
+					<section>
+						<p>Una vez tengamos una estructura definida, lo mejor es ir fragmentando nuestro código en diferentes <i>Templates</i>. Las más utilizadas son las siguientes:</p>
+						<ul>
+							<li><strong>header.php</strong> Para la cabecera</li>
+							<li><strong>footer.php</strong> Para el pie de página</li>
+							<li><strong>404.php</strong> Se carga cuando no se encuentra la página</li>
+							<li><strong>search.php</strong> Cuando el usuario ejecuta una búsqueda</li>
+							<li><strong>category.php</strong> Cuando estamos viendo el archivo por categorías</li>
+							<li><strong>tag.php</strong> Cuando estamos viendo el archivo por etiquetas</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li><strong>author.php</strong> Cuando vemos todas las entradas de un autor.</li>
+							<li><strong>date.php</strong> Cuando estamos viendo archivos por fecha</li>
+							<li><strong>archive.php</strong> Se carga cuando <strong>category.php</strong>, <strong>tag.php</strong>, <strong>author.php</strong> o <strong>date.php</strong> no existen en el tema</li>
+							<li><strong>single.php</strong> Para posts singulares</li>
+							<li><strong>page.php</strong> Se carga cuando estamos viendo una sola página estática</li>
+							<li><strong>home.php</strong> Se carga cuando vemos todas las entradas del blog</li>
+						</ul>
+						<p>Jerarquía de Templates: <a href="https://developer.wordpress.org/files/2014/10/wp-template-hierarchy.jpg">https://developer.wordpress.org/files/2014/10/wp-template-hierarchy.jpg</a> </p>
+					</section>
+				</section>
+
+				<section>
+					<h2>Cabecera y Pie de Página</h2>
+					<section>
+						<ul>
+							<li>Normalmente la cabecera y pie de páginas son comunes a todas las páginas</li>
+							<li>Podemos separar las zonas comunes de cabecera y pie en header.php y footer.php respectivamente.</li>
+							<li>WordPress no las carga automáticamente por lo que en todos los archivos habrá que llamarlas utilizando las funciones get_header() y get_footer()</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>En ocasiones podemos encontrarnos con que para ciertos sitios necesitemos una cabecera o pie diferentes. Para ello, se puede usar el siguiente código:</li>
+<pre><code>&lt;?php get_header( 'tienda' ); ?&gt;</code></pre>
+							<li>Este código cargará <code>header-tienda.php</code> en lugar de header.php</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Separa la zona de cabecera y footer en dos archivos distintos.</p>
+					</section>
+
+
+				</section>
+
+				<section>
+					<h2>Single posts y Páginas</h2>
+					<section>
+						<br>
+						<ul> 
+							<li>Para mostrar un post singular se suele utilizar <code>single-post.php</code> o <code>single.php</code>. La primera tiene más prioridad, por lo que se intenta cargar antes. Si no existe se intentará con la segunda.</li>
+							<li>De la misma forma, si mostramos una página estática, WordPress intentará cargar <code>page.php</code>.</li>
+						</ul>
+						<p>Las plantillas de las páginas admiten además otras formas de personalización:</p>
+						<ul>
+							<li>page-&lt;slug&gt;.php Se cargará sólo para la página con slug = slug</li>
+							<li>page-&lt;id&gt;.php Se cargará sólo para la página con ID = id</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Duplica el index.php y llámale <code>single.php</code></li>
+							<li>Ahora elimina en single.php todo lo que no se necesite al mostrar un post singular</li>
+							<li>Haz lo mismo para las páginas creando una page.php. Esta vez elimina la sidebar de la página.</li>
+							<li>Crea reglas de CSS mediante las clases de &lt;body&gt; para que en una página la anchura sea completa. Para los posts se mantendrá tal y como antes.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Archivos</h2>
+					<section>
+						<ul>
+							<li>Son aquellas plantillas que visualizan una lista de posts</li>
+							<li><code>category.php, tag.php, author.php, date.php y archive.php</code> son todas plantillas de archivo. Cada una muestra una información distinta.</li>
+							<li>Si las primeras no existen, WordPress intentará mostrar <i>archive.php</i>, si tampoco existe cargará <i>index.php</i></li>
+						</ul>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Crea una plantilla para categorías y otra para archivos en general.</li>
+							<li>Copia el contenido de index.php y luego elimina el contenido innecesario.</li>
+							<li>Para mostrar el nombre de la etiqueta puedes usar <code>single_tag_title()</code></li>
+							<li>En los archivos no muestres el contenido completo del post, the_excerpt es suficiente.</li>
+							<li>Crea también un <code>header-archive.php</code> y elimina el menú de dicha plantilla. Llama a dicha cabecera desde archive.php usando <code>get_header()</code></li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Evitando repetición de código</h2>
+					<section>
+						<p>En este punto podemos darnos cuenta de que tenemos casi el mismo código repetido en varias zonas.</p>
+						<p>Es más que recomendable agrupar el código en común en algún otro sitio e incluirlo desde donde queramos.</p>
+						<p>Para ello se usa la función <code>get_template_part( $slug, $name )</code></p>
+					</section>
+					<section>
+						<p>Incluir el archivo <code>content.php</code></p>
+<pre><code>&lt;?php get_template_part( 'content' ) ?&gt;</code></pre>
+						<p>Incluir el archivo <code>content-page.php</code>, si no existe incluir <code>content.php</code></p>
+<pre><code>&lt;?php get_template_part( 'content', 'page' ) ?&gt;</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Utiliza <code>get_template_part()</code> para reubicar el contenido del post en <code>content.php</code> (la parte del tag &lt;archive&gt; es suficiente)</li>
+							<li>Tendrás que volver a emplear algunos <i>Template Tags</i> que habías quitado anteriormente</li>
+						</ul>
+					</section>
+
+				</section>
+
+				<section>
+					<h2>Página de búsqueda</h2>
+					<section>
+						<p><code>search.php</code> se carga cuando estamos intentando realizar una búsqueda. No tiene ninguna particularidad aparte de la función <code>get_search_query()</code></p>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Crea un nuevo fichero, <code>search.php</code>. Básate en <code>index.php</code> para ello pero usa la función get_search_query(). Elimina de index.php lo que ya no necesites.</li>
+							<li>Recuerda que en la búsqueda sólo queríamos que salieran los títulos de los posts</li>
+						</ul>
+					</section>
+				</section>	
+
+				<section>
+					<h2>sidebar.php</h2>
+					<section>
+						<p>Podemos incluir nuestro código que saca por pantalla la Sidebar en un archivo llamado <code>sidebar.php</code></p>
+						<p>Se utiliza de forma parecida a <code>get_header()</code>, usando esta vez <code>get_sidebar()</code> allá donde queramos incluir el código.</p>
+					</section>
+					<section>
+						<p>Incluir el archivo <code>sidebar.php</code></p>
+<pre><code>&lt;?php get_sidebar() ?&gt;</code></pre>
+						<p>Incluir el archivo <code>sidebar-page.php</code>, si no existe incluir <code>sidebar.php</code></p>
+<pre><code>&lt;?php get_sidebar( 'page' ) ?&gt;</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Mueve todos los bloques de código del sidebar a <code>sidebar.php</code></li>
+							<li>Crea una nueva sidebar en <code>functions.php</code> que se muestre únicamente en <code>single.php</code></li>
+						</ul>
+					</section>
+				</section>	
+
+				<section>
+					<h2>404.php</h2>
+					<ul>
+						<li>404.php es la plantilla más sencilla: No necesita el Loop para funcionar ya que se carga cuando no se ha encontrado el post al que queremos ir.</li>
+						<li>Un mensaje “No se ha encontrado nada” podría bastar.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Formatos de posts</h2>
+					<section>
+						<p>Los formatos de posts nos permiten fácilmente mostrar los posts de una manera distintiva. Por ejemplo, podríamos querer que los posts de tipo link, no se mostraran de la misma manera que el resto (podríamos eliminar el título o cualquier otra cosa).</p>
+					</section>
+					<section>
+						<p>WordPress permite nativamente los siguientes tipos de posts:</p>
+						<ul>
+							<li>aside</li>
+							<li>gallery</li>
+							<li>link</li>
+							<li>image</li>
+							<li>quote</li>
+							<li>status</li>
+							<li>video</li>
+							<li>audio</li>
+							<li>chat</li>
+						</ul>
+					</section>
+					<section>
+						<p>Sin embargo todos estos tipos no están activados por defecto. Para hacerlo, debemos insertar el siguiente código en nuestro functions.php usando el action <code>after_setup_theme</code></p>
+						<pre><code>&lt;?php add_theme_support( 'post-formats', array( 'link', 'aside' ) ); ?&gt;</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Activa los formatos de posts link y aside en functions.php</li>
+							<li>Sustituye la sentencia <code>get_template_part( 'content' )</code> en <i>single.php</i> para que en lugar de cargar <i>content.php</i> pueda cargar <i>content-aside.php</i> o <i>content-link.php</i> mediante la función <code>get_post_format()</code></li>
+							<li>Si el post es de tipo <i>aside</i> muestra sólo el extracto, sin el título del post</li>
+							<li>Si el post es de tipo <i>link</i> muestra sólo el título</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Plantillas de páginas</h2>
+					<section>
+						<br>
+						<p>Funcionan de manera similar a los formatos pero esta vez no hay que activarlos.</p>
+						<p>Para crear una plantillas de página simplemente crearemos un nuevo fichero .php y le pondremos la siguiente cabecera:</p>
+<pre><code>/**
+* Template Name: Nombre de la plantilla
+*/</code></pre>
+						<p>
+							Cuando WordPress cargue una página con una plantilla determinada, intentará cargar dicho fichero en lugar de <i>page.php</i>
+						</p>
+						<p>Para que quede todo más organizado es mejor meter las plantillas en un subdirectorio llamado <code>templates</code> dentro de nuestro tema</p>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Crea una nueva plantilla llamada <code>Contact Form</code> en <code>templates/contact-form.php</code></li>
+							<li>La plantilla deberá ser igual que page.php pero que añada un formulario de contacto después del contenido.</li>
+							<li>Para el formulario usa el siguiente código: <a href="https://gist.github.com/igmoweb/7eea6cece8a02dd8ab87">https://gist.github.com/igmoweb/7eea6cece8a02dd8ab87</a></li>
+							<li>Crea una nueva página con dicha plantilla y observa el resultado.</li>
+							<li>Crea un código en functions.php que utilice el action <code>init</code> para procesar el formulario.</li>
+						</ul>
+					</section>
+				</section>
+
+				
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

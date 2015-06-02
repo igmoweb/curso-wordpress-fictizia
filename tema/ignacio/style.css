@@ -74,6 +74,10 @@ textarea {
 	background:#EEE;
 }
 
+.page #inner-content {
+	width:100%;
+}
+
 
 
 #sidebar {
@@ -136,4 +140,25 @@ h2 {
 
 .meta {
 	font-style: italic;
+}
+
+
+.error {
+	background:red;
+	color:white;
+}
+.info {
+	background:green;
+	color:black;
+}
+
+#contact-form input,
+#contact-form textarea {
+	padding:5px 3px;
+	width:100%;
+}
+
+#contact-form label {
+	display:block;
+	margin-bottom:10px;
 }

@@ -198,14 +198,112 @@ if ( have_posts() ) {
 							<li><strong>is_page()</strong>: Comprueba si estamos viendo una página estática.– is_search(): Comprueba si estamos en la página de los resultados de la búsqueda.</li>
 						</ul>
 					</section>
+					
 				</section>
 
 				<section>
+					<h2>Ejercicio</h2>
+					<section>
+						<p>Vamos a añadirle algunas condiciones a nuestro Tema:</p>
+						<ul>
+							<li>Cuando la URL muestre sea un post o página (<code>is_singular()</code>), se mostrará el contenido completo del post (<code>the_content()</code>), además no usaremos el permalink en el título del post</li>
+							<li>En el archivo de posts, mostraremos sólo el extracto (<code>the_excerpt()</code>)</li>
+							<li>Si se muestran los resultados de la búsqueda (<code>is_search()</code>) únicamente mostraremos los títulos de los posts</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Si se muestran los resultados de la búsqueda (<code>is_search()</code>), justo antes de empezar el Loop itilizaremos un &lt;h1&gt; para mostrar <i>Resultados de la búsqueda: [LO QUE ESTAMOS BUSCANDO]</i> haciendo uso de la función <code>get_search_query()</code></li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>De forma similar, si estamos en el archivo (<code>is_archive()</code>), mostraremos <i>"Archivos"</i>.</li>
+							<li>Si estamos en el archivo por categorías (<code>is_category()</code>), mostraremos <i>"Categoría: [NOMBRE DE LA CATEGORÍA]"</i>. Para mostrar el nombre de la categoría usamos <code>single_cat_title()</code></li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Reemplaza estas dos últimas funciones por la función <code>get_the_archive_title()</code>. Busca dicha función en el núcleo de WordPress, ¿Puedes identificar todos los casos incluídos?</li>
+							<li>Haz que dicho título sólo aparezca cuando se cumpla la condición <code>is_archive()</code></li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Paginación</h2>
+					<section>
+						<p>Existen dos funciones para paginar los posts:</p>
+						<ul>
+							<li><code>the_posts_pagination()</code>: Saca por pantalla las páginas numeradas (1,2,3...)</li>
+							<li><code>the_posts_navigation()</code>: Saca por pantalla dos enlaces para ir a página anterior/posterior.</li>
+						</ul>
+						<p><strong>Nota</strong>: Dichas funciones aparecen por primera vez en la versión 4.1. Para mantener retrocompatibilidad será mejor utilizar funciones más antiguas: <a href="https://codex.wordpress.org/Pagination">https://codex.wordpress.org/Pagination</a></p>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p class="alignleft">Haz que aparezca una paginación numerada, que aparezcan 2 páginas como mucho a los lados de la página actual <br/>(  1 … 3 4 <strong><u>5</u></strong> 6 7 … 20 por ejemplo )</p>
+						<p class="alignleft">Reduce el número de posts por página en Ajustes>Lectura para comprobar que funciona</p>
+					</section>
+				</section>
+
+				
+				<section>
 					<h2>Personalizando The Loop</h2>
-					<ul>
-						<li>Para modificar The Loop hay que hacer uso del objeto <code>$wp_query</code>, el cual guarda todos los posts que se van a mostrar además de muchísima otra información. Todos los Template Tags vistos, directa o indirectamente acceden a dicho objeto para sacar toda la información.</li>
-						<li>El objeto <code>$wp_query</code> pertenece a la clase <code>WP_Query</code>. Dicha clase nos permite hacer selecciones de post a la base de datos. WordPress crea $wp_query automáticamente y la declara como variable local pero nosotros podemos crear un objeto nuevo también.</li>
-					</ul>
+					<section>
+						<ul>
+							<li>Para modificar The Loop hay que hacer uso del objeto <code>$wp_query</code>, el cual guarda todos los posts que se van a mostrar además de muchísima otra información. Todos los Template Tags vistos, directa o indirectamente acceden a dicho objeto para sacar toda la información.</li>
+							<li>El objeto <code>$wp_query</code> pertenece a la clase <code>WP_Query</code>. Dicha clase nos permite hacer selecciones de post a la base de datos. WordPress crea $wp_query automáticamente y la declara como variable local pero nosotros podemos crear un objeto nuevo también.</li>
+						</ul>
+					</section>
+					<section>
+						<p>Un ejemplo para mostrar los títulos de los últimos 5 posts:</p>
+<pre><code>&lt;?php
+$args = array(
+	'posts_per_page' =&gt; 5,
+	'ignore_sticky_posts' =&gt; true
+);
+$my_query = new WP_Query( $args );
+?&gt;
+&lt;?php while( $my_query-&gt;have_posts() ): $my_query-&gt;the_post(); ?&gt;
+	&lt;h1&gt;&lt;?php the_title(); ?&gt;&lt;/h1&gt;
+&lt;?php endwhile; ?&gt;</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Vamos a crear un apartado de posts relacionados. Dicha lista s&oacute;lo debe aparecer cuando s&oacute;lo se muestra un &uacute;nico post (is_single()).</li>
+							<li>Habr&aacute; que mostrarlos DESPUÉS del contenido del post. Crearemos uno nuevo para ello:
+<pre><code>&lt;ul class=&rdquo;related-posts&rdquo;&gt;&lt;/ul&gt;</code></pre></li>
+							<li>Cada uno de los posts ir&aacute; dentro de un elemento lista &lt;li&gt;</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Los posts relacionados se deben sacar a partir de una de las etiquetas del post principal. Si el post tiene muchas etiquetas lo mejor será coger una al azar. Para obtener una de dichas etiquetas usa el siguiente código:</li>
+<pre><code>&lt;?php
+$tags = get_the_tags();
+$rand_key = array_rand( $tags );
+$tag_id = $tags[ $rand_key ]-&gt;term_id;</code></pre></li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>
+								Para los argumentos de WP_Query: Sacaremos 3 posts (posts_per_page => 3), ignorando los posts destacados (ignore_sticky_posts => true) con la ID de la categoría que hayamos sacado al azar (tag_id => ID ).
+								Crearemos ahora un loop personalizado y sacaremos por pantalla el título dentro de cada elemento lista &lt;li&gt;
+								Intenta también excluir el post principal de los posts relacionados con <code>get_the_ID()</code> y el argumento para WP_Query <code>post__not_in => array( ID )</code>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>¿Cuál es el problema con el código?</h3>
+– Al poner el div.entry-meta debajo de los posts relacionados, las etiquetas cambian
+en cada refresco porque está mostrando las etiquetas del último post relacionado
+que hemos sacado.
+– Para solucionar esto se utiliza wp_reset_query(). Esta función resetea la query y
+vuelve al estado anterior de empezar a iterar por nuestro Loop personalizado.
+					</section>
 				</section>
 
 				<section>
@@ -213,7 +311,7 @@ if ( have_posts() ) {
 					<section>
 						<ul>
 							<li>Vamos a crear un apartado de posts relacionados. Dicha lista s&oacute;lo debe aparecer cuando s&oacute;lo se muestra un &uacute;nico post (is_single()).</li>
-							<li>Habr&aacute; que mostrarlos ENCIMA el div.entry-meta. Crearemos uno nuevo para ello: &lt;ul class=&rdquo;related-posts&rdquo;&gt;&lt;/ul&gt;</li>
+							<li>Aunque no sea lo normal, los vamos a mostrar ENCIMA del contenido. Crearemos un bloque nuevo para ello: &lt;ul class=&rdquo;related-posts&rdquo;&gt;&lt;/ul&gt;</li>
 							<li>Cada uno de los posts ir&aacute; dentro de un elemento lista &lt;li&gt;</li>
 							<li>Los posts relacionados se deben sacar a partir de una de las etiquetas del post principal. Si el post tiene muchas etiquetas lo mejor ser&aacute; coger una al azar. Para obtener una de dichas etiquetas usa el siguiente c&oacute;digo:</li>
 						</ul>
@@ -231,7 +329,7 @@ $tag_id = $tags[ $rand_key ]-&gt;term_id;</code></pre>
 					<section>
 						<h3>¿Cuál es el problema con el código?</h3>
 						<ul>
-							<li>Al poner el div.entry-meta debajo de los posts relacionados, las etiquetas cambian en cada refresco porque está mostrando las etiquetas del último post relacionado que hemos sacado.</li>
+							<li>Al poner el nuevo loop, el contenido del post principal no se corresponde con lo que debería salir ya que toma el último valor de nuestro post personalizado.</li>
 							<li>Para solucionar esto se utiliza <code>wp_reset_query()</code>. Esta función resetea la query y vuelve al estado anterior de empezar a iterar por nuestro Loop personalizado.</li>
 						</ul>
 					</section>
