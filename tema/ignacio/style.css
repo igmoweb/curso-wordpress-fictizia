@@ -162,3 +162,25 @@ h2 {
 	display:block;
 	margin-bottom:10px;
 }
+
+.commentlist .comment {
+	margin-bottom:25px;
+	padding:1rem;
+	background:white;
+	list-style: none;
+}
+
+
+#commentform {
+	padding:1rem;
+	background: white;
+}
+
+#commentform label {
+	display:block;
+}
+
+img {
+	max-width:100%;
+	height: auto;
+}

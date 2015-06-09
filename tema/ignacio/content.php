@@ -1,5 +1,9 @@
 <article id="id-<?php the_ID(); ?>" <?php post_class(); ?> >
 	<header class="post-header">
+	
+		<?php if ( has_post_thumbnail() ): ?>
+			<div class="post-thumbnail"><?php the_post_thumbnail( 'imagen-destacada' ); ?></div>
+		<?php endif; ?>
 
 		<?php if ( is_singular() ): ?>
 			<h1><?php the_title(); ?></h1>															

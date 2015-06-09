@@ -7,6 +7,8 @@
 				<?php get_template_part( 'content' ); ?>
 				
 			<?php endwhile; ?>
+
+			<?php comments_template(); ?>
 			
 		<?php endif; ?>
 	</div>		

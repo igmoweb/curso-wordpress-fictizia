@@ -269,41 +269,6 @@ $my_query = new WP_Query( $args );
 	&lt;h1&gt;&lt;?php the_title(); ?&gt;&lt;/h1&gt;
 &lt;?php endwhile; ?&gt;</code></pre>
 					</section>
-					<section>
-						<h3>Ejercicio</h3>
-						<ul>
-							<li>Vamos a crear un apartado de posts relacionados. Dicha lista s&oacute;lo debe aparecer cuando s&oacute;lo se muestra un &uacute;nico post (is_single()).</li>
-							<li>Habr&aacute; que mostrarlos DESPUÉS del contenido del post. Crearemos uno nuevo para ello:
-<pre><code>&lt;ul class=&rdquo;related-posts&rdquo;&gt;&lt;/ul&gt;</code></pre></li>
-							<li>Cada uno de los posts ir&aacute; dentro de un elemento lista &lt;li&gt;</li>
-						</ul>
-					</section>
-					<section>
-						<ul>
-							<li>Los posts relacionados se deben sacar a partir de una de las etiquetas del post principal. Si el post tiene muchas etiquetas lo mejor será coger una al azar. Para obtener una de dichas etiquetas usa el siguiente código:</li>
-<pre><code>&lt;?php
-$tags = get_the_tags();
-$rand_key = array_rand( $tags );
-$tag_id = $tags[ $rand_key ]-&gt;term_id;</code></pre></li>
-						</ul>
-					</section>
-					<section>
-						<ul>
-							<li>
-								Para los argumentos de WP_Query: Sacaremos 3 posts (posts_per_page => 3), ignorando los posts destacados (ignore_sticky_posts => true) con la ID de la categoría que hayamos sacado al azar (tag_id => ID ).
-								Crearemos ahora un loop personalizado y sacaremos por pantalla el título dentro de cada elemento lista &lt;li&gt;
-								Intenta también excluir el post principal de los posts relacionados con <code>get_the_ID()</code> y el argumento para WP_Query <code>post__not_in => array( ID )</code>
-							</li>
-						</ul>
-					</section>
-					<section>
-						<h3>¿Cuál es el problema con el código?</h3>
-– Al poner el div.entry-meta debajo de los posts relacionados, las etiquetas cambian
-en cada refresco porque está mostrando las etiquetas del último post relacionado
-que hemos sacado.
-– Para solucionar esto se utiliza wp_reset_query(). Esta función resetea la query y
-vuelve al estado anterior de empezar a iterar por nuestro Loop personalizado.
-					</section>
 				</section>
 
 				<section>

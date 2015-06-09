@@ -268,6 +268,135 @@
 					</section>
 				</section>
 
+				<section>
+					<h2>Comentarios</h2>
+					<section>
+						<ul>
+							<li>Para mostrar tanto los comentarios como el formulario para añadir nuevos comentarios se utiliza un nuevo fichero: <code>comments.php</code>. Es uno de los más complicados dentro de un desarrollo de un Tema aunque se puede simplificar mucho.</li>
+							<li>
+								Para incluir los comentarios en cualquiera de nuestros archivos se utiliza la siguiente función:  <pre><code>&lt;?php comments_template( $file, $separate_comments ); ?&gt;</code></pre>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>En <code>$file</code> podemos indicar el archivo a cargar pero por defecto es comments.php</li>
+							<li>Con <code>$separate_comments</code> podemos separar los comentarios por tipo de forma que los comentarios aparezcan antes y luego trackbacks y pingbacks al final.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>comments.php</h3>
+						<p>Los comentarios funcionan de forma parecida al Loop pero tiene funciones con distinto nombre</p>
+						<p><strong>Ejemplo de esquema básico:</strong> <a href="https://gist.github.com/igmoweb/0e9d9f6f086ab34f2cfd">https://gist.github.com/igmoweb/0e9d9f6f086ab34f2cfd</a></p>
+					</section>
+					<section>
+						<ol>
+							<li>Si el post requiere contraseña, no mostramos los comentarios ( si el usuario ya la ha introducido, <code>post_password_required()</code> devuelve false )</li>
+							<li>Si los comentarios están abiertos para ese post y además hay comentarios, mostramos los comentarios y el formulario, en otro caso sólo mostramos el formulario</li>
+							<li>A continuación comprobamos si hay comentarios con <code>have_comments()</code> de forma parecida al Loop</li>
+							<li>Listamos los comentarios con la función <code>wp_list_comments()</code> que acepta un array de parámetros para personalizarlo a nuestro gusto.</li>
+						</ol>
+					</section>
+					<section>
+						<ol start="5">
+							<li>Si hay más de una página en los comentarios (<code>get_comment_pages_count()</code>) y en Ajustes hemos chequeado la opción de Paginar Comentarios (<code>get_option( 'page_comments' )</code>), mostraremos la navegación de comentarios.</li>
+							<li><code>previous_comments_link()</code> y <code>next_comments_link()</code> sacan los enlaces de paginación</li>
+							<li><code>comment_form()</code> saca por pantalla el formulario para crear un nuevo comentario.</li>
+						</ol>
+					</section>
+
+					
+				</section>
+
+				<section>
+					<h2>Ejercicio</h2>
+					<section>
+						<ul>
+							<li>Crea un nuevo archivo <code>comments.php</code> e inclúyelo desde <code>single.php</code> y <code>page.php</code></li>
+							<li>Pega la estructura básica en él.</li>
+						</ul>
+						<p>Basándote en las opciones de <code>wp_list_comments</code> en el Codex, realiza las siguientes personalizaciones:</p>
+						<ul>
+							<li>Que el estilo del listado use &lt;ol&gt; en lugar de &lt;ul&gt;</li>
+							<li>Que para cada comentario se ejecute la función (deberías usar el parámetro callback) <code>fictizia_comment()</code>: <a href="https://gist.github.com/igmoweb/d5f8ab051330ddf1433f">https://gist.github.com/igmoweb/d5f8ab051330ddf1433f</a></li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Muestra justo antes del listado de comentarios un &lt;h2&gt; para mostrar el número de comentarios que hay. La función <code>get_comments_number()</code> puede serte de ayuda.</li>
+							<li>Si queremos contestar (reply) un comentario, el link cargará de nuevo la página. Para que no tengamos que cargar de nuevo, WordPress ofrece un fichero Javascript entre sus librerías que podemos “encolar” cuyo slug es 'comment-reply'.Añádelo usando <code>wp_enqueue_script()</code>.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Imágenes</h2>
+					<section>
+						<p>Cuando subimos una imagen, WordPress genera como mínimo cuatro tamaños distintos a partir de ella:</p>
+
+						<ul>
+							<li><strong>thumbnail</strong>: 150x150</li>
+							<li><strong>medium</strong>: 300x300 máximo</li>
+							<li><strong>large</strong>: 640x640 max</li>
+							<li><strong>full</strong>: El tamaño original de la imagen</li>
+						</ul>
+
+						<p>WordPress permite añadir nuevos tamaños de imágenes si los necesitáramos para nuestro Tema/Plugin: <pre><code>&lt;?php add_image_size( 'imagen-destacada', 700, 450, false );</code></pre></p>
+					</section>
+					<section>
+
+							<p>El último argumento (false) significa que la imagen no será recortada sino que intentará ajustar el tamaño proporcionalmente. Si el parámetro fuera true entonces la imagen será recortada de alto y de largo para conseguir dicho tamaño.</p>
+					</section>
+					<section>
+						<br>
+							<p>Desde la versión 3.9, dicho parámetro acepta un array que indica la posición del área de recortado. Si no se indica nada, el recorte se hará lo más centrado posible.</p>
+							<img src="img/thumbs.jpg" style="height:250px;" alt="">
+							<p>Si una imagen es demasiado pequeña para abarcar uno de los tamaños, éste no será generado.</p>
+					</section>
+					<section>
+						<h3>Uso de imágenes en el Tema</h3>
+						<ul>
+							<li>En el caso de los Temas, el uso de los tamaños de imagen suelen utilizarse para las imágenes destacadas.</li>
+							<li>
+								Si hemos registrado el tamaño de nuestra imagen en functions.php y asignamos una imagen destacada a nuestro post, podremos sacar dicha imagen por pantalla de la siguiente manera: <pre><code>&lt;?php the_post_thumbnail( 'imagen-destacada' );</code></pre>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Uso de imágenes en el Tema</h3>
+						<ul>
+							<li>La función, que debe usarse dentro del Loop, acepta un parámetro, el nombre del tamaño de la imagen que debe ser único.</li>
+							<li>
+								Por defecto, un Tema no admite imágenes destacadas, hay que registrarlo también usando la siguiente sentencia: <pre><code>&lt;?php add_theme_support( 'post-thumbnails' );</code></pre>
+							</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Ejercicio</h2>
+					<section>
+						<ul>
+							<li>Activa las imágenes destacadas en el Tema usando <code>add_theme_support</code></li>
+							<li>Registra un nuevo tamaño de imagen llamada 'imagen-destacada' de tamaño <strong>600x400</strong> y que se recorte automáticamente con la función <code>add_image_size</code>.</li>
+							<li>Ahora, dentro del Loop de <code>content.php</code> saca las imágenes destacadas de cada post usando <code>the_post_thumbnail()</code></li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Asigna una imagen destacada a un post y observa el resultado.</li>
+							<li>Ahora cambia el tamaño de imagen-destacada a 600x300 y vuelve a ver el resultado.</li>
+							<li>¿Qué ha pasado?</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Cuando cambiamos el tamaño de las imágenes, éstas no se regeneran de nuevo con lo que el tamaño que hemos cambiado ya no lo tenemos en nuestro sitio. Para esto se utiliza un plugin llamado <strong>Regenerate Thumbnails</strong> que vuelve a generar todos los tamaños de cada imagen en nuestro sitio.</li>
+							<li>Es recomendable usar este plugin cada vez que cambiamos un tamaño pero también cuando cambiamos de Tema ya que los tamaños difieren de un Tema a otro.</li>
+						</ul>
+					</section>
+				</section>
+
 				
 
 			</div>
