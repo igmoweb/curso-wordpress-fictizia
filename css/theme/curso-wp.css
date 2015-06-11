@@ -25,6 +25,11 @@
 	border:1px solid #ADADAD;
 	background: #DEDEDE;
 	color:#333;
+	background-color: #59ADB4;
+  border: 1px solid #42666A;
+  color: rgb(46, 46, 46) !important;
+  padding: 5px;
+  border-radius: 6px;
 }
 
 .reveal a {
