@@ -1,5 +1,9 @@
 <?php
 
+if ( ! isset( $content_width ) ) {
+	$content_width = 660;
+}
+
 
 function ignacio_scripts() {
 	wp_enqueue_style( 'ignacio-style', get_stylesheet_uri() );
@@ -20,6 +24,14 @@ function ignacio_setup() {
 	add_theme_support( 'post-thumbnails' );
 
 	add_image_size( 'imagen-destacada', 600, 300, true );
+
+	add_editor_style( 'css/editor-style.css' );
+
+	add_theme_support( 'automatic-feed-links');
+
+	add_theme_support( 'title-tag' );
+
+	load_theme_textdomain( 'ignacio', get_template_directory() . '/languages' );
 }
 add_action( 'after_setup_theme', 'ignacio_setup' );
 

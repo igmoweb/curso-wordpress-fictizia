@@ -209,6 +209,37 @@
 				</section>
 
 				<section>
+					<h2>author.php</h2>
+					<section>
+						<ul>
+							<li><strong>author.php</strong> es también una plantilla de archivo pero normalmente se intenta sacar los datos del autor en la zona de arriba y esto presenta una dificultad adicional.</li>
+							<li>La idea es sacar el primer post del Loop y mostrar los datos del autor que queramos.</li>
+							<li>El problema es que una vez hemos sacado el primer post del Loop, éste no saldrá en el listado: Hay que “rebobinar” los posts usando rewind_posts() y trabajar el Loop con normalidad.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Crea una nueva plantilla <code>author.php</code> copiando el contenido de archive.php para empezar con una base.</li>
+							<li>Utiliza esta estructura para mostrar los datos del autor justo antes de empezar el Loop</li>
+							<li>Utiliza el siguiente código:</li>
+						</ul>
+					</section>
+					<section>
+<pre><code>&lt;?php if ( have_posts() ): the_post(); ?&gt;
+	&lt;div class=&quot;author-bio&quot;&gt;
+		&lt;div class=&quot;avatar&quot;&gt;&lt;?php echo get_avatar( get_the_author_meta( 'ID' ), 32 ); ?&gt;&lt;/div&gt;
+		&lt;?php if ( get_the_author_meta( 'description' ) ) : ?&gt;
+			&lt;div class=&quot;author-bio-content&quot;&gt;&lt;?php the_author_meta( 'description' ); ?&gt;&lt;/div&gt;
+		&lt;?php endif; ?&gt;
+	&lt;/div&gt;
+	&lt;?php rewind_posts(); ?&gt;
+&lt;?php endif; ?&gt;</code></pre>
+						<p>Necesitarás también añadir <pre><code>&lt;?php the_author_posts_link();  ?&gt;</code></pre> En content.php para poder hacer click en algún autor.</p>
+					</section>
+				</section>
+
+				<section>
 					<h2>Formatos de posts</h2>
 					<section>
 						<p>Los formatos de posts nos permiten fácilmente mostrar los posts de una manera distintiva. Por ejemplo, podríamos querer que los posts de tipo link, no se mostraran de la misma manera que el resto (podríamos eliminar el título o cualquier otra cosa).</p>
@@ -395,6 +426,105 @@
 							<li>Es recomendable usar este plugin cada vez que cambiamos un tamaño pero también cuando cambiamos de Tema ya que los tamaños difieren de un Tema a otro.</li>
 						</ul>
 					</section>
+				</section>
+
+				<section>
+					<h2>Otras plantillas</h2>
+					<section>
+						<p>Además de todas las plantillas que hemos visto también existen algunas otras que merece la pena revisar:</p>
+						<ul>
+							<li><code>attachment.php</code> Se carga cuando estamos en la página de un elemento de la biblioteca de medios, no sólo imágenes. WordPress es capaz de cargar también image.php sólo para imágenes, o pdf.php sólo para documentos PDFs. Depende del valor post_mime_type del post.</li>
+							<li><code>searchform.php</code>: Es la plantilla que WordPress utiliza para mostrar el formulario de búsqueda, ya sea en un widget o usando la función <code>get_search_form()</code></li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Ultimando detalles</h2>
+					<section>
+						<h3>screenshot.png</h3>
+						<p>En la pantalla de administración de selección de tema, cada uno de ellos tiene una imagen representativa. Para incluir uno en nuestro tema simplemente debemos crear un nuevo archivo en nuestro tema llamado screenshot.png con un tamaño ideal de <u>880x660</u> píxeles.</p>
+					</section>
+					<section>
+						<h3>Feeds automáticos</h3>
+						<p><code>add_theme_support( 'automatic-feed-links');</code> añade dos etiquetas &lt;link&gt; dentro de &lt;head&gt; para indicar cuál es la URL del RSS, tanto de los comentarios como de las entradas.</p>
+					</section>
+					<section>
+						<h3>Soporte RTL</h3>
+						<p>Para que el Theme sea compatible con un lenguaje RTL como el árabe o hebreo se puede crear un nuevo css llamado <code>rtl.css</code>, WordPress lo añadirá automáticamente si detecta que el lenguaje utilizado es RTL.</p>
+					</section>
+					<section>
+					<br><br>
+						<h3>Estilos del editor de posts</h3>
+						<p>Normalmente nos interesará que cuando un usuario edite contenido lo pueda ver de la forma más parecida a como lo verá luego en la
+web. Para eso WordPress permite agregar una hoja de estilos sólo para el editor
+de posts/páginas, etc... Se usa simplemente la función <code>add_editor_style()</code>
+también usando el hook after_theme_setup. WordPress tratará de añadir (si lo
+encuentra) una hoja de estilos que se encuentra en nuestro Tema llamada <code>editor-
+	style.css</code>. Si el lenguaje es RTL, entonces intentará agregar <code>editor-style-rtl.css</code></p>
+					</section>
+					<section>
+						<h3>Variable global $content_width</h3>
+						<p>No es obligatoria pero es bueno poner el ancho máximo
+del contenido de nuestro sitio. WordPress aplica dicho ancho a varios de sus
+estilos y algunos plugins podrían utilizarlo.</p>
+					</section>
+					<section>
+						<h3>Title Tag</h3>
+						<p><code>add_theme_support( 'title-tag' );</code> añadido en 4.1, utiliza la función <code>wp_title()</code> en cabecera. Sirve para que los plugins puedan cambiar el título. Antes se usaba la función directamente, ahora hay que usar <code>add_theme_support()</code></p>
+					</section>
+					<section>
+						<h3>HTML5</h3>
+						<p><code>add_theme_support( 'html5' );</code></p>
+<pre><code>add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) );</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<h2>Traducción de un Tema</h2>
+
+					<section>
+						<ul>
+							<li>Antes de ponernos a traducir nuestro Tema será necesario descargarnos el software POEdit http://poedit.net/download</li>
+							<li>Una vez tengamos un archivo .po podremos meterlo en una carpeta de nuestro Theme y darle el nombre de nuestro dominio de lenguaje + .po.</li>
+							<li>Ahora sólo falta decirle a WordPress que registre dicho dominio:
+							<pre><code>load_theme_textdomain( 'ignacio', get_template_directory() . '/languages' );</code></pre>
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<ul>
+	
+							<li>Una vez registrado, podremos traducir nuestro tema a cualquier lenguaje.
+									WordPress buscará primero en nuestra carpeta de lenguajes si hay alguna
+									traducción y si no la encuentra irá a <code>wp-content/languages/themes</code>. Si tampoco
+									existe cargará el idioma en el que hemos escrito nuestras cadenas.</li>
+							<li>Para indicar a WordPress de qué idioma es nuestra traducción simplemente
+llamamos a nuestro .po, <code>nombre-del-dominio-es_ES.po</code> para traducir al español,o <code>nombre-del-dominio-he_IL.po</code> para hacerlo al hebreo.</li>
+						</ul>
+					</section>
+
+					<section>
+						<ul>
+							<li>WordPress debería recoger dicho archivo y traducir las cadenas que le indicamos en el .mo generado por POEdit</li>
+							<li>La desventaja de situar los archivos en nuestra carpeta del Tema es que al actualizarlo, dichas cadenas se perderán y habrá que traducirlo de nuevo. De la otra forma, las cadenas persisten (incluso cuando actualizamos WordPress).</li>
+							<li>Instrucciones para crear un archivo PO <a href="https://codex.wordpress.org/User:Skippy/Creating_POT_Files">https://codex.wordpress.org/User:Skippy/Creating_POT_Files</a></li>
+						</ul>
+					</section>
+
+				</section>
+
+				<section>
+					<h2>Starter Themes</h2>
+					<p>Los Starter Themes son Temas que incluyen un esqueleto para empezar. Estos son los más famosos:</p>
+					<ul>
+						<li><a href="http://underscores.me/">http://underscores.me/</a></li>
+						<li><a href="http://themble.com/bones/">http://themble.com/bones/</a></li>
+						<li> <a href="https://roots.io/sage/">https://roots.io/sage/</a> </li>
+						<li><a href="http://demo.themeum.com/starter/">http://demo.themeum.com/starter/</a></li>
+						<li><a href="https://github.com/olefredrik/foundationpress">https://github.com/olefredrik/foundationpress</a></li>
+					</ul>
 				</section>
 
 				

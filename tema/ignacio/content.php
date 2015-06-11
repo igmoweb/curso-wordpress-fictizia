@@ -29,6 +29,7 @@
 		<?php edit_post_link(); ?><br>
 		<?php wp_link_pages(); ?><br>
 		<?php comments_popup_link(); ?><br>
+		<?php the_author_posts_link();  ?>
 
 	</footer>
 </article>
