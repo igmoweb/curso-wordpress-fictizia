@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+	
+
+				<section>
+					<h1>Customizer API</h1>
+				</section>				
+
+				<section>
+					<h2>Definición</h2>
+					<section>
+						<p>El Customizer es un framework para ver en vivo cualquier cambio en un tema en WordPress.</p>
+						<p>Proporciona un interaz simple para personalizar varios aspectos del tema elegido por el usuario como colores, widgets, estructura, menús...</p>
+						<p>Desde la versión 3.4 en adelante es la forma recomendada para añadir opciones a un Tema.</p>
+					</section>
+					<section>
+						<br><br>
+						<h3>Objetos en el Customizer</h3>
+						<img src="img/customizer-object-types.png" style="width:70%" alt="">
+					</section>
+					<section>
+						<h3>Añadir objetos</h3>
+<pre><code>function ignacio_customizer_setup( $wp_customize ) {
+    // Registrar nuevos objetos
+}
+add_action( 'customize_register', 'ignacio_customizer_setup' );</code></pre>
+					</section>
+					<section>
+					<br>
+						<p>El Customizer API provee varias funciones <code>get_</code>, <code>add_</code> y <code>remove_</code> para añadir, modificar o eliminar objetos dentro del Customizer</p>
+<pre><code>add_action('customize_register','my_customize_register');
+function my_customize_register( $wp_customize ) {
+    $wp_customize->add_panel();
+    $wp_customize->get_panel();
+    $wp_customize->remove_panel();
+ 
+    $wp_customize->add_section();
+    $wp_customize->get_section();
+    $wp_customize->remove_section();
+ 
+    $wp_customize->add_setting();
+    $wp_customize->get_setting();
+    $wp_customize->remove_setting();
+ 
+    $wp_customize->add_control();
+    $wp_customize->get_control();
+    $wp_customize->remove_control();
+}</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<h2>Settings</h2>
+					<section>
+						<p>Las settings gestionan la vista previa, guardado y validación de los objetos del Customizer.</p>
+						<p>Cada Setting es gestionado por un <strong>Objeto Controlador</strong></p>
+<pre><code>$wp_customize->add_setting( 'setting_id', array(
+    'type' => 'theme_mod', // u 'option'
+    'capability' => 'edit_theme_options',
+    'theme_supports' => '', // Normalmente no se necesita.
+    'default' => '', // Valor por defecto
+    'transport' => 'refresh', // o postMessage si usamos Javascript
+    'sanitize_callback' => '' // Función que validará el dato
+    'sanitize_js_callback' => '' // Función que tratará el dato desde base de datos hacia el campo (si es un formato de dato extraño para WordPress)
+) );</code></pre>
+					</section>
+					<section>
+						<p>Hay dos tipos principales de Setting (especificado en el parámetro <code>type</code></p>
+						<ul>
+							<li><strong>Option</strong>: Almacenados directamente en BBDD y aplicados al margen del tema activado. Normalmente son los plugins los que harán uso de ellos.</li>
+							<li><strong>Theme Modification</strong>: Aplicado pr el tema. Se guarda en BBDD en la misma fila junto con el resto de las opciones.</li>
+						</ul>
+					</section>
+					<section>
+						<p>Es muy importante establecer un valor por defecto así como una función de validación para asegurarnos de que no nos lleguen dato inseguros a la BBDD.</p>
+<pre><code>$wp_customize->add_setting( 'background_color', array(
+    'default' => '#f72525',
+    'sanitize_callback' => 'sanitize_hex_color',
+) );</code></pre>
+					</section>
+					<section>
+						<p>Para utilizar un Setting dentro de nuestro tema (por ejemplo, un color de fondo), se usa la función <code>get_theme_mod($id)</code> o <code>get_option($id)</code> si utilizamos un Setting de tipo <i>option</i></p>
+<pre><code>function my_custom_css_output() {
+	?&gt;
+	&lt;style&gt;
+	body {
+	   background-color:&lt;?php echo get_theme_mod( 'background_color' ); ?&gt;;	
+	}	
+	&lt;/style&gt;
+    &lt;?php
+}
+add_action( 'wp_head', 'cxnh_custom_css_output');</code></pre>
+					</section>
+				</section>
+				<section>
+					<h2>Controls</h2>
+					<section>
+						<p>Los controladores son el objeto principal para crear elementos visuales en el Customizer. Cada uno de ellos debe ir asociado a un Setting.</p>
+<pre><code>$wp_customize->add_control( 'setting_id', array(
+    'type' => 'date',
+    'priority' => 10, // Prioridad dentro de la sección
+    'section' => 'colors', // Nombre de la sección
+    'label' => __( 'Date' ),
+    'description' => __( 'This is a date control with a red border.' ),
+    'input_attrs' => array(
+        'class' => 'my-custom-class-for-js',
+        'style' => 'border: 1px solid #900',
+        'placeholder' => __( 'mm/dd/yyyy' ),
+    ),
+    'active_callback' => 'is_front_page',
+) );</code></pre>
+					</section>
+					<section>
+						<p>El parámetro más importante es <code>type</code> que designa qué tipo de campo es. WordPress dispone de algunos por defecto:</p>
+						<ul>
+							<li>checkbox</li>
+							<li>textarea</li>
+							<li>radio</li>
+							<li>select</li>
+							<li>dropdown-pages</li>
+						</ul>
+						<p>Para cualquier tipo de <code>input</code> soportado por HTML, simplemente se pasa el valor del atributo HTML <i>type</i>: text, hidden, number, email...</p>
+					</section>
+					<section>
+						<p>Los controles deben agregarse a alguna sección (y las secciones deben tener controles asociados) para ser mostrados.</p>
+						<p>Por ejemplo, añadir un textarea:</p>
+<pre><code>$wp_customize->add_control( 'custom_theme_css', array(
+    'label' => __( 'Custom Theme CSS' ),
+    'type' => 'textarea',
+    'section' => 'default',
+) );</code></pre>
+					</section>
+				</section>
+				<section>
+					<h2>Sections</h2>
+					<p>Las secciones son contenedores de Controladores</p>
+				</section>
+
+
+
+				
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+						Reveal.configure({ slideNumber: 'c / t' });
+
+
+		</script>
+
+	</body>
+</html>
