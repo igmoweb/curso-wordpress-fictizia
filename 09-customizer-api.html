@@ -173,7 +173,89 @@ add_action( 'wp_head', 'cxnh_custom_css_output');</code></pre>
 				</section>
 				<section>
 					<h2>Sections</h2>
-					<p>Las secciones son contenedores de Controladores</p>
+					<section>
+
+						<p>Las secciones son contenedores de Controladores</p>
+<pre><code>$wp_customize->add_section( 'custom_css', array(
+    'title' => __( 'Custom CSS' ),
+    'description' => __( 'Add custom CSS here' ),
+    'panel' => '', // Panel ID
+    'priority' => 160,
+    'capability' => 'edit_theme_options'
+) );</code></pre>
+					</section>
+				</section>
+				<section>
+					<h2>Panels</h2>
+					<p>Los paneles se introdujeron en 4.0 y permite añadir capas adicionales de jerarquía dentro del Customizer. Un ejemplo de panel es el de <i>Widgets</i></p>
+<pre><code>$wp_customize->add_panel( 'menus', array(
+    'title' => __( 'Menus' ),
+    'description' => $description,
+    'priority' => 160, 
+) );</code></pre>
+				</section>
+				<section>
+					<h2>Ejercicio</h2>
+					<section>
+						<ul>
+							<li>Crea un <strong>panel</strong> sólo para las opciones de tu tema </li>
+							<li>Dentro del panel crea <strong>dos secciones</strong>: Una para colores y otra para pie de página</li>
+						</ul>
+					</section>
+					<section><ul>
+						<li>Dentro de la sección de colores hay que crear <strong>dos settings</strong>: Uno para el color de cabecera y otro para el pie (ambos de tipo text). Para el parámetro <strong>sanitize_callback</strong> utiliza <code>sanitize_hex_color</code></li>
+							<li>Dentro de la sección pie de página una opción con un <strong>textfield</strong> para insertar un texto en el pie.Para el parámetro <strong>sanitize_callback</strong> utiliza la siguiente función:
+<pre><code>function ignacio_sanitize_textfield( $input ) {
+	global $allowedposttags;
+	$output = wpautop( wp_kses( $input, $allowedposttags ), true );
+	return $output;
+}</code></pre></li>
+					</ul></section>
+					<section>
+						<ul>
+							<li>Aplica mediante la función <code>get_theme_mod();</code> los estilos de los colores usando el action 'wp_head'</li>
+							<li>Aplica también el texto guardado en el pie de página.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>La opción PostMessage</h2>
+					<section>
+						<p>El Customizer automáticamente carga la vista previa cuando modificamos un valor. Esto puede ser lento ya que WordPress necesita recargar todo el FrontEnd cada vez que hacemos un cambio.</p>
+						<p>El Customizer ofrece una API para cambiar opciones directamente en JavaScript permitiendo una vista previa "en vivo"</p>
+						<p>Primero tenemos que cambiar el parámetro <code>transport</code> a <code>PostMessage</code> dentro de los parámetros de <code>add_setting</code>
+<pre><code>'transport' => 'postMessage'</code></pre>
+						</p>
+					</section>
+					<section>
+						<p>Después tenemos que "encolar" un fichero JS que se vaya a encargar de manejar el campo.</p>
+<pre><code>function ignacio_preview_js() {
+    wp_enqueue_script( 'ignacio_customizer', get_stylesheet_directory_uri() . '/js/customizer.js', array( 'customize-preview', 'jquery' ) );
+}
+add_action( 'customize_preview_init', 'ignacio_preview_js' );</code></pre>
+					</section>
+					<section>
+						<p>El fichero debería verse algo tal que así:</p>
+<pre><code>( function( $ ) {
+    wp.customize( 'ignacio_header_color', function( value ) {
+        value.bind( function( to ) {
+            $( '#header' ).css( 'background-color', to );
+        } );
+    } );
+
+    wp.customize( 'ignacio_footer_text', function( value ) {
+        value.bind( function( to ) {
+            $( '#footer' ).html( to );
+        } );
+    } );
+} )( jQuery );</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<h2>Ejercicio</h2>
+					<p>Actualiza tu código para el Customizer de forma que los colores y el texto de pie de página se actualicen al instante</p>
 				</section>
 
 
