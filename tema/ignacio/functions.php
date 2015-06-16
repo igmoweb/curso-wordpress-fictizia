@@ -32,6 +32,21 @@ function ignacio_setup() {
 	add_theme_support( 'title-tag' );
 
 	load_theme_textdomain( 'ignacio', get_template_directory() . '/languages' );
+
+	$args = array(
+		'flex-width'    => true,
+		'width'         => 1024,
+		'flex-height'    => true,
+		'height'        => 768,
+		'default-image' => get_template_directory_uri() . '/images/header.jpg',
+	);
+	add_theme_support( 'custom-header', $args );
+
+	$args = array(
+		'default-color' => '000000',
+		'default-image' => get_template_directory_uri() . '/images/background.png',
+	);
+	add_theme_support( 'custom-background', $args );
 }
 add_action( 'after_setup_theme', 'ignacio_setup' );
 
@@ -165,3 +180,6 @@ function ignacio_comment( $comment, $args, $depth ) {
 
 	<?php
 }
+
+include_once( 'inc/meta-boxes.php' );
+include_once( 'inc/customizer.php' );

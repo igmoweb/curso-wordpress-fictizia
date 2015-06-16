@@ -37,6 +37,10 @@ html {
 	box-sizing: inherit;
 }
 
+body {
+	background:#000;
+}
+
 body,
 button,
 input,
@@ -95,6 +99,7 @@ textarea {
 #footer {
 	background:#EEE;
 	margin-top:20px;
+	padding:40px;
 }
 
 nav#menu li {

@@ -516,6 +516,75 @@ llamamos a nuestro .po, <code>nombre-del-dominio-es_ES.po</code> para traducir a
 				</section>
 
 				<section>
+					<h2>Metaboxes</h2>
+					<section>
+						<p>Los Meta Boxes permiten añadir información adicional en un Post o Página</p>
+						<p>Un ejemplo nativo de Meta Box es la zona donde asignamos categorías a un post, pero también lo es la zona de Autor.</p>
+						<p>Para añadir un Meta Box a las entradas se usa el siguiente código:</p>
+						<pre><code>add_meta_box( $id, $title, $callback, $post_page, $context, $priority, $callback_args );</code></pre>
+					</section>
+					<section>
+						<ul>
+							<li><strong>id</strong> — La ID del elemento DIV que envolverá el Meta Box</li>
+							<li><strong>title</strong> — Título del Meta Box</li>
+							<li><strong>callback</strong> — Función que sacará por pantalla la información</li>
+							<li><strong>post_page</strong> — El tipo de post donde mostraremos el Meta Box</li>
+							<li><strong>context</strong> — normal, advanced o side• priority — Prioridad del contexto, puede ser high, core, default o low</li>
+							<li><strong>callback_args</strong> — Argumentos para pasar a callback</li>
+						</ul>
+					</section>
+					<section>
+						<p>Este ejemplo añade un Meta Box que contiene una caja de texto:</p>
+<pre><code>&lt;?php
+add_action( 'add_meta_boxes', 'fictizia_mbe_create' );
+function fictizia_mbe_create() {
+  add_meta_box( 'fictizia-meta', __( 'Info adicional', 'fictizia' ), 'fictizia_show_meta_box', 'post', 'normal', 'high' );
+}
+
+function fictizia_show_meta_box( $post ) {
+  $info = get_post_meta( $post-&gt;ID, 'fictizia_additional_info', true );
+  if ( empty( $info ) )
+    $info = '';
+  
+  ?&gt;
+    &lt;?php wp_nonce_field( 'my_meta_box', 'my_meta_box_nonce' ); ?&gt;
+    &lt;input type=&quot;text&quot; name=&quot;additional_info&quot; value=&quot;&lt;?php echo esc_attr( $info ); ?&gt;&quot; /&gt;
+  &lt;?php
+}</code></pre>
+					</section>
+					<section>
+						<p>¿Cómo guardamos ese dato? Usando el action <code>save_post</code>:</p>
+<pre><code>add_action( 'save_post', 'fictizia_save_meta' );
+function fictizia_save_meta( $post_id ) {  
+  // Verificar que el nonce es válido
+  if ( ! wp_verify_nonce( $_POST['my_meta_box_nonce'], 'my_meta_box' ) )
+    return;
+    
+  // Si es un autosave no lo guardamos
+  if ( defined( 'DOING_AUTOSAVE' ) &amp;&amp; DOING_AUTOSAVE )
+    return;
+
+  if ( isset( $_POST['additional_info'] ) ) {
+    $info = sanitize_text_field( $_POST['additional_info'] );
+    update_post_meta( $post_id, 'fictizia_additional_info', $info );
+  }
+}</code></pre>
+					</section>
+					<section>
+						<p>¿Cómo recogemos ahora ese dato para mostrarlo donde queramos?</p>
+						<pre><code>get_post_meta( get_the_ID(), 'additional_info', true )</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Añade a nuestro Meta Box un campo &lt;select&gt; más con dos opciones: “Tipo libro” o “Tipo Digital”.</li>
+							<li>El campo debe guardarse en un post_meta adicional</li>
+							<li>Una vez lo tengas, muéstralo en alguna plantilla de nuestro Tema <code>single.php</code> usando get_post_meta y sacando por pantalla en una lista ambos valores.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
 					<h2>Starter Themes</h2>
 					<p>Los Starter Themes son Temas que incluyen un esqueleto para empezar. Estos son los más famosos:</p>
 					<ul>

@@ -251,16 +251,152 @@ add_action( 'customize_preview_init', 'ignacio_preview_js' );</code></pre>
     } );
 } )( jQuery );</code></pre>
 					</section>
+					<section>
+						<h2>Ejercicio</h2>
+						<p>Actualiza tu código para el Customizer de forma que los colores y el texto de pie de página se actualicen al instante</p>
+					</section>
+				</section>
+
+				
+
+				<section>
+					<h2>Custom Controls, Sections y Panels</h2>
+					<section>
+						<p>Hasta ahora, utilizando las funciones del Customizer hemos agregado elementos definidos ya por WordPress pero es posible crear los nuestros propios si ninguno se adapta a lo que necesitamos.</p>
+						<p>Para crear Controls, Sections y Panels Personalizados basta con crear una nueva clase y extenderla de  <code>WP_Customize_Control, WP_Customize_Section, y WP_Customize_Panel</code></p>
+					</section>
+					<section>
+<pre><code>class WP_New_Menu_Customize_Control extends WP_Customize_Control {
+    public $type = 'new_menu';
+    /**
+    * Saca por pantalla el contenido del controlador
+    */
+    public function render_content() {
+    ?&gt;
+        &lt;button class=&quot;button button-primary&quot; id=&quot;create-new-menu-submit&quot; tabindex=&quot;0&quot;&gt;&lt;?php _e( 'Create Menu' ); ?&gt;&lt;/button&gt;;
+    &lt;?php
+    }
+}</code></pre>
+						<p>Cualquier objeto de la clase <code>WP_New_Menu_Customize_Control</code> heredará todas las propiedades y métodos de la clase <code>WP_Customize_Control</code></p>
+
+					</section>
+					<section>
+						<p>En el anterior ejemplo, sobreescribimos la función <code>render_content()</code> presente en <code>WP_Customize_Control</code> por la nuestra propia</p>
+						<p>En la mayoría de los casos, será la única función que necesitemos sobreescribir.</p>
+						<p>Durante el curso no crearemos ninguna clase de este tipo sin embargo, WordPress tiene algunas clases que extienden de <code>Wp_Customize_Control</code></p>
+					</section>
+					<section>
+						<p>La clase <code>WP_Customize_Color_Control</code> permite añadir un campo de tipo color que abrirá un selector de colores.</p>
+<pre><code>$wp_customize->add_control( 
+	new WP_Customize_Color_Control( $wp_customize, $setting_id, $args ) 
+);</code></pre>
+						<p>Donde <code>$wp_customize</code> es el objeto que hemos venido usando, $<code>setting_i</code>d un string con la ID del controlador/setting y <code>$args</code> es un array con un argumentario.</p>
+					</section>
+					<section>
+<pre><code>$wp_customize->add_control(
+    new WP_Customize_Color_Control(
+        $wp_customize,
+        'header_color',
+        array(
+            'label' => __( 'Header Color', 'ignacio' ),
+            'section' => 'colors',
+        )
+    )
+);</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Cambia las opciones de colores de cabecera y pie de página para que los controladores hagan uso de la clase <code>WP_Customize_Color_Control</code></p>
+					</section>
 				</section>
 
 				<section>
-					<h2>Ejercicio</h2>
-					<p>Actualiza tu código para el Customizer de forma que los colores y el texto de pie de página se actualicen al instante</p>
+					<h2>Controles desactivados: Header y Background</h2>
+					<section>
+						<p>WordPress permite activar dos controles en el Customizer sin crear código para ellos:</p>
+						<ul>
+							<li><strong>Color/Imagen de cabecera</strong> <pre><code>add_theme_support( 'custom-header' );</code></pre></li>
+							<li><strong>Color/Imagen de fondo</strong> <pre><code>add_theme_support( 'custom-background' );</code></pre></li>
+						</ul>
+					</section>
+					<section>
+						<br><br><br>
+						<h3>Header</h3>
+<pre><code>$defaults = array(
+	'default-image'          => '',
+	'random-default'         => false,
+	'width'                  => 0,
+	'height'                 => 0,
+	'flex-height'            => false,
+	'flex-width'             => false,
+	'default-text-color'     => '',
+	'header-text'            => true,
+	'uploads'                => true,
+	'wp-head-callback'       => '',
+	'admin-head-callback'    => '',
+	'admin-preview-callback' => '',
+);
+add_theme_support( 'custom-header', $defaults );</code></pre>
+					</section>
+					<section>
+						<h3>Header</h3>
+						<p>Un ejemplo con imágenes flexibles y una imagen por defecto:</p>
+<pre><code>$args = array(
+	'flex-width'    => true,
+	'width'         => 1024,
+	'flex-height'    => true,
+	'height'        => 768,
+	'default-image' => get_template_directory_uri() . '/images/header.jpg',
+);
+add_theme_support( 'custom-header', $args );</code></pre>
+					</section>
+					<section>
+						<h3>Header</h3>
+						<p>Y en <code>header.php</code></p>
+						<pre><code>&lt;img src=&quot;&lt;?php header_image(); ?&gt;&quot; height=&quot;&lt;?php echo get_custom_header()-&gt;height; ?&gt;&quot; width=&quot;&lt;?php echo get_custom_header()-&gt;width; ?&gt;&quot; /&gt;</code></pre>
+					</section>
+
+					<section>
+						<br><br>
+						<h3>Background</h3>
+<pre><code>$defaults = array(
+	'default-color'          => '',
+	'default-image'          => '',
+	'default-repeat'         => '',
+	'default-position-x'     => '',
+	'default-attachment'     => '',
+	'wp-head-callback'       => '_custom_background_cb',
+	'admin-head-callback'    => '',
+	'admin-preview-callback' => ''
+);
+add_theme_support( 'custom-background', $defaults );</code></pre>
+					</section>
+					<section>
+						<br><br>
+						<h3>Background</h3>
+						<p>Ejemplo con un color por defecto #000000 y una imagen.</p>
+<pre><code>$args = array(
+	'default-color' => '000000',
+	'default-image' => get_template_directory_uri() . '/images/background.jpg',
+);
+add_theme_support( 'custom-background', $args );</code></pre>
+					</section>
+					<section>
+					<br><br><br>
+						<h3>Background</h3>
+
+						<p>WordPress genera automáticamente la siguiente línea en cabecera:</p>
+<pre><code>&lt;style type=&quot;text/css&quot; id=&quot;custom-background-css&quot;&gt;
+body.custom-background { background-color: #bdd96e; }
+&lt;/style&gt;</code></pre>
+						<p>Ojo, para que el color por defecto funcione deberíamos poner dicho color por defecto en nuestra hoja de estilos ya que WordPress sólo ataca al body cuando tiene clase <i>custom-background</i></p>
+					</section>
 				</section>
 
-
-
-				
+				<section>
+					<h2>Más información sobre el Customizer:</h2>
+					<a href="https://developer.wordpress.org/themes/advanced-topics/customizer-api/">https://developer.wordpress.org/themes/advanced-topics/customizer-api/</a>
+				</section>
 
 			</div>
 
