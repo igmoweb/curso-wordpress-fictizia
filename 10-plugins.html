@@ -182,18 +182,89 @@
 
 				<section>
 					<h2>Shortcodes</h2>
+					<section>
+						<p>La shortcode API permite crear macro códigos.</p>
+						<p>Un shortcode es simplemente una etiqueta entre corchetes como [algo]. Al editar el post lo podemos poner de esta forma pero WordPress lo sustituirá si existe un shortcode llamado algo</p>
+					</section>
+					<section>
+					<br>
+						<img src="img/shortcode.png" alt="">
+					</section>
+					<section>
+						<h3>Registrar un Shortcode</h3>
+						<p>
+							Imaginemos que cada vez que usemos el shortcode [book] lo reemplacemos por un enlace a un libro en Amazon: <a href="http://www.amazon.com/Professional-WordPress-Plugin-Development-Williams/dp/0470916222">http://www.amazon.com/Professional-WordPress-Plugin-Development-Williams/dp/0470916222</a>
+						</p>
+					</section>
+					<section>
+						<h3>Registrar un Shortcode</h3>
+						<p>Pero el shortcode API va un poco más allá. El ejemplo anterior sustituye siempre el shortcode por un link con el texto “Comprar Libro”.</p>
+						<p>¿Qué pasaría si tuviéramos distintos links para elegir? Los shortcodes también permiten parámetros:</p>
+					</section>
+					<section>
+					<br>
+						<h3>Registrar un Shortcode</h3>
+<pre><code>add_shortcode( 'book', 'fictizia_render_shortcode' );
+function fictizia_render_shortcode( $attr ) {
+  $link = 'http://www.amazon.com/Professional-WordPress-Plugin-Development-Williams/dp/0470916222';
+  if ( isset( $attr['id'] ) ) {
+    switch ( $attr['id'] ) {
+      case 'wdd':
+        $link = 'http://www.amazon.com/Professional-WordPress-Development-Brad-Williams/dp/111844227X/ref=pd_sim_b_1?ie=UTF8&refRID=1E5RJHT4MX2P8BV88MVS';
+        break;
+      case 'otro': 
+        ...
+    }
+  }
+  return '&lt;a href="' . $link . '"&gt;Comprar Libro&lt;/a&gt;';
+}</code></pre>
+						<p>Ahora podremos elegir el tipo de libro usando parámetros: <code>[book id=”wdd”]</code></p>
+					</section>
+					<section>
+						<ul>
+							<li>Los shortcodes también se pueden utilizar de forma parecida a HTML.</li>
+							<li>En el ejemplo anterior, el texto del link es siempre 'Comprar Libro'. Podríamos cambiarlo por cualquier cosa utilizando la siguiente estructura:<code> [book]Comprar[/book]</code></li>
+						</ul>
+					</section>
+					<section>
+<pre><code>add_shortcode( 'book', 'fictizia_render_shortcode' );
+function fictizia_render_shortcode( $attr, $content ) {
+  $link = 'http://www.amazon.com/Professional-WordPress-Plugin-Development-Williams/dp/0470916222';
+  if ( isset( $attr['id'] ) ) {
+    switch ( $attr['id'] ) {
+      case 'wdd':
+      $link = 'http://www.amazon.com/Professional-WordPress-Development-Brad-Williams/dp/111844227X/ref=pd_sim_b_1?ie=UTF8&refRID=1E5RJHT4MX2P8BV88MVS';
+    break;
+    }
+  }
+  
+  if ( empty( $content ) )
+    $content = __( 'Comprar Libro', 'ignacio' );
+  
+  return '&lt;a href="' . $link . '"&gt;' . $content . '&lt;/a&gt;';
+}</code></pre>
+					</section>
+					<section>
+<li>Crea un nuevo shortcode, <code>[posts-list items=""]</code> que sustituya el shortcode por una lista de un número de posts. </li>
+<li>Saca junto a ellos su imagen destacada ( si la tiene) de tamaño 'thumbnail'</li>
+<li>Para ello tendrás que usar la función <code>get_posts( $args )</code>: <a href="https://gist.github.com/igmoweb/fdd83b67b0e8f5155049">https://gist.github.com/igmoweb/fdd83b67b0e8f5155049</a></li>
+					</section>
 				</section>
-
+			
 				<section>
 					<h2>Creación de Widgets</h2>
 				</section>
-
+				
 				<section>
 					<h2>CPTs</h2>
 				</section>
 
 				<section>
 					<h2>Taxonomías</h2>
+				</section>
+
+				<section>
+					<h2>Menús de administración</h2>
 				</section>
 
 
