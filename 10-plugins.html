@@ -265,6 +265,277 @@ function fictizia_render_shortcode( $attr, $content ) {
 			
 				<section>
 					<h2>Creación de Widgets</h2>
+					<section>
+						<p>Para crear un plugin es necesario crear una clase que extienda de la clase <code>WP_Widget</code>. Nuestra nueva clase heredará todas las propiedades y métodos (funciones) de la clase superior.</p>
+						<p>
+							El esqueleto básico de un widget es el siguiente: <a href="https://gist.github.com/igmoweb/69ac270f7f414d960d95">https://gist.github.com/igmoweb/69ac270f7f414d960d95</a>
+						</p>
+						<p>De esta manera el widget aparecerá listado aunque no hará nada.</p>
+					</section>
+					<section>
+						<h3>Formulario del widget</h3> <code>form( $instance )</code>
+						<p>Se encarga de mostrar el formulario en la zona de administración. La forma más básica de un widget es mostrar sólo un campo texto para el título del widget.</p>
+						<p>
+							Para sacar un campo de texto para el título debemos usar varios métodos de la clase <code>WP_Widget</code> (la superior): <a href="https://gist.github.com/igmoweb/d1adbda1a48caf118101">https://gist.github.com/igmoweb/d1adbda1a48caf118101</a>
+						</p>
+					</section>
+					<section>
+						<h3>Formulario del widget</h3>
+						<p><code>$instance</code> es la variable que contiene todos los valores previamente guardados en el formulario. Por ejemplo <code>$instance['title']</code> devolvería el título si hemos guardado uno previamente. La primera vez que saquemos el formulario, $instance no va a contener nada y si intentamos acceder a $instance['title'] nos aparecerá un Notice. Para evitar esto podemos usar la función de WP <code>wp_parse_args</code>: <a href="https://gist.github.com/igmoweb/3c3223f72d24fd8a71d5">https://gist.github.com/igmoweb/3c3223f72d24fd8a71d5</a>
+						</p>
+					</section>						
+					<section>
+					<br><br>
+						<h3>Validar el formulario</h3> <code>update($new_instance, $old_instance)</code>
+						<p><code>$new_instance</code> son los valores que intentamos guardar y <code>$old_instance</code> son los que había antes guardados.</p>
+						<p>
+							En nuestro caso es sencillo guardar el título. En el siguiente ejemplo, el Widget guarda los datos del título, pero si está vacío dejará el valor que había antes: <a href="https://gist.github.com/igmoweb/f8ea55b3c6b7c25c48f6">https://gist.github.com/igmoweb/f8ea55b3c6b7c25c48f6</a>
+						</p>
+						<p>En este momento, nuestro plugin debería ser capaz de guardar el título pero aún así no es capaz de sacar nada en el Front End.</p>
+					</section>
+					<section>
+						<br><br>
+						<h3>Mostrando el widget</h3> <code>widget($args, $instance)</code>
+						<p><code>$args</code> es una argumentario de WordPress que servirá para mostrar correctamente el esqueleto e <code>$instance</code> es lo que hemos guardado en el formulario.</p>
+						<p>
+							En el siguiente ejemplo mostraremos un “Hola Mundo” con el título del widget: <a href="https://gist.github.com/igmoweb/7357e3c5c2beed2fb333">https://gist.github.com/igmoweb/7357e3c5c2beed2fb333</a>
+						</p>
+						<p>
+							A menudo encontraremos en esta función el uso de una función PHP, extract, que convierte las keys de un array en variables junto con su valor: <a href="https://gist.github.com/igmoweb/22ee9bcfa2fe2c2d3ab5">https://gist.github.com/igmoweb/22ee9bcfa2fe2c2d3ab5</a>
+						</p>
+					</section>
+					<section>
+						<p>
+							Y aquí el widget completo: <a href="https://gist.github.com/igmoweb/0c0352adc47a85331362">https://gist.github.com/igmoweb/0c0352adc47a85331362</a>
+						</p>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>A partir del widget completo trabaja en los siguientes cambios. La finalidad es mostrar en el widget un listado con los títulos y enlaces de algunos posts que hayamos creado.</li>
+							<li>Añade un campo nuevo de tipo “number” en el formulario del widget justo debajo del campo title. Este campo indicará el número de posts que vamos a mostrar en el widget. El atributo name se llamará “number_of_posts”. El valor por defecto será de 2.</li>
+							<li>Ahora utiliza la WP_Query en el front (método widget( $args, $instance ) ) para mostrar un listado de los posts basado en el número indicado en el widget.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Un ejemplo muy parecido se encuentra en <a href="http://codex.wordpress.org/Class_Reference/WP_Query#Usage">http://codex.wordpress.org/Class_Reference/WP_Query#Usage</a>. Sólo necesitarás el argumentos posts_per_page</li>
+							<li>Ahora ordénalos de forma arbitraria mediante el argumento 'orderby' => 'rand' en WP_Query.</li>
+							<li>Ahora muestra sólo aquellos que tengan un contenido específico con el parámetro 's' => 'loquesea'.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Interacción con la Base de Datos: $wpdb</h2>
+					<section>
+						<p><code>$wpdb</code> es el objecto que WordPress utiliza para comunicarse con la BBDD. Provee varias funciones para hacer queries personalizadas a la Base de Datos de forma sencilla.</p>
+						<p>
+							Para utilizar dicho objecto hay que invocarlo usando la palabra reservada global:
+							<code><pre>&lt;?php global $wpdb; ?&gt;</pre></code>
+						</p>
+						
+					</section>
+					<section>
+						<p>
+							Por ejemplo, para borrar un post directamente (aunque habría que usar <code>wp_delete_post</code> en su lugar) podríamos hacer lo siguiente:<code><pre>&lt;?php $wpdb-&gt;query( &quot;DELETE FROM wp_posts WHERE ID = 1;&quot; ); ?&gt;</pre></code>
+						</p>
+						<p>
+							Esto presenta un problema. Si el prefijo de las tablas no es wp_, entonces la tabla wp_posts no existirá. Para solucionarlo, $wpdb provee unos atributos que devuelven los nombres de las tablas correctamente<code><pre>&lt;?php $wpdb-&gt;query( &quot;DELETE FROM $wpdb-&gt;posts WHERE ID = 1;&quot; ); ?&gt;</pre></code>
+						</p>
+					</section>
+					<section>
+					<br><br>
+						<p>Imaginemos ahora que vamos a ejecutar la misma query pero esta vez la ID del post es pasado a través de la variable global $_POST, por ejemplo porque hemos enviado un formulario.</p>
+<pre><code>$post_id = $_POST['post_id'];
+$wpdb->query( “DELETE FROM $wpdb->posts WHERE ID = $post_id;” )</code></pre>
+						<p>
+							Aquí hay un problema grande de seguridad. Si la URL fuera así: <code>www.ejemplo.com?1;DELETE FROM wp_users</code>
+						</p>
+						<p>La query se convertiría en <code>DELETE FROM wp_posts WHERE ID=1;DELETE FROM wp_users;</code> dando como resultado el borrado completo de nuestra tabla de usuarios.</p>
+						<p>
+							Esta falla de seguridad se conoce comúnmente como <strong>Inyección SQL</strong>
+						</p>
+					</section>
+					<section>
+						<p>Para evitar esto, <code>$wpdb</code> tiene un método que funciona similar a <code>printf</code>. El método es prepare y se utiliza así:</p>
+<pre><code>$post_id = $_POST['post_id'];
+$query = $wpdb->prepare( “DELETE FROM $wpdb->posts WHERE ID = %d;”, $post_id );
+$wpdb->query( $query );</code></pre>
+						<p>Prepare convertirá todos los comodines %s en cadenas y todos los %d en números. En este caso, si $post_id no es un número, se convertirá en 0.</p>
+					</section>
+					<section>
+						<h3>Insertar registros</h3>
+<pre><code>$wpdb->insert(
+	$tablename,
+	array(
+		'campo1' => 'cadena',
+		'campo2' => 10
+	),
+	array( '%s', '%d' )
+);
+// INSERT INTO $tablename (campo1 = 'cadena', campo2 = 10);Actualizar registros</code></pre>
+					</section>
+					<section>					
+						<h3>Actualizar registros</h3>
+<pre><code>$wpdb->update(
+	$tablename,
+	array(
+		'campo1' => 'cadena',
+		'campo2' => 10
+	),
+	array(
+		'ID' => 20
+	),
+	array( '%s', '%d' ),
+	array( '%d' )
+);
+// UPDATE $tablename SET campo1 = 'cadena', campo2 = 10 WHERE ID = 20;</code></pre>
+					</section>
+					<section>
+						<h3>Seleccionar un único valor</h3>
+<pre><code>$sql = “SELECT COUNT(ID) FROM $wpdb->posts;”
+$result = $wpdb->get_var( $sql );
+// $result tiene ahora el número de filas que tiene la tabla wp_posts</code></pre>
+					</section>
+					<section>
+						<h3>Seleccionar una fila</h3>		
+<pre><code>$sql = "SELECT user_email, user_login FROM $wpdb->users WHERE ID = 1";
+$result = $wpdb->get_row( $sql );
+// $result->user_email contiene el email del usuario con ID = 1
+// $result->user_login contiene el login del usuario con ID = 1</code></pre>
+					</section>
+					<section>
+						<h3>Seleccionar una columna</h3>
+<pre><code>$sql = "SELECT post_date FROM $wpdb->posts WHERE post_type = 'page'";
+$result = $wpdb->get_col( $sql );
+// $result es un array que contiene las fechas de publicación de todas las páginas</code></pre>
+					</section>
+
+					<section>
+						<h3>Seleccionar un conjunto de resultados</h3>
+<pre><code>$sql = “SELECT * FROM $wpdb->posts WHERE post_status = 'publish'”;
+$result = $wpdb->get_results( $sql );
+// $result es un array con todos las filas de posts que estén publicados</code></pre>
+					</section>
+
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Usando la función var_dump( $variable ) y el action init saca por pantalla los resultados de las siguientes queries:</li>
+							<li>La columna post_title de los posts cuyo autor ID sea 1</li>
+							<li>La fila en la tabla wp_options donde option_name sea 'siteurl'</li>
+							<li>Las filas de la tabla wp_posts donde post_type sea 'page'</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Creación de tablas en un plugin</h3>
+						<p>Normalmente, a la hora de crear un plugin necesitaremos almacenar información en BBDD.</p>
+						<p>Existen dos tipos de datos que un plugin suele almacenar:</p>							
+					</section>
+					<section>
+					<br>
+						<ul>
+							<li><u>Datos de configuración</u>: Lo más probable es que no necesitemos tablas personalizadas para ello. La <strong>Options API</strong> suele ser suficientes. Todas las opciones de nuestro plugin se almacenarían en la tabla wp_options</li>
+							<li><u>Una colección de dato</u>s: En primer lugar deberíamos estudiar si los datos que vamos a guardar encajan de alguna manera en una de las tablas de WordPress (¿Es un metadato de un post (tabla postmeta)? ¿Es información adicional sobre usuarios (tabla usermeta)? ¿Es información adicional sobre un usuario comentario (tabla commentmeta). Si ninguna de las tablas que WordPress ofrece se ajusta a nuestras necesidades, es el momento de crear tablas personalizadas para guardar todos los datos que queramos.</li>
+						</ul>
+					</section>
+					<section>
+						<p>Esta es la definición de una tabla llamada clientes:</p>
+<pre><code>CREATE TABLE wp_fictizia_clientes (
+	`ID` bigint(20) NOT NULL auto_increment,
+	`nombre_cliente` varchar(200) DEFAULT '',
+	PRIMARY KEY
+	(ID),
+	KEY nombre (nombre),
+);</code></pre>
+					</section>
+					<section>
+						<p>
+							Para una mejor integración con WordPress, el prefijo de la tabla debería ser igual que el resto de las tablas. Para ello podemos utilizar la variable <code>$wpdb->prefix</code>. Además podemos aprovechar el juego de caracteres del resto de las tablas con <code>$wpdb->charset y $wpdb->collate</code>
+						</p>
+<pre><code>$tablename = $wpdb->prefix . 'fictizia_clientes';
+$charset_collate = '';
+if ( ! empty($wpdb->charset) )
+	$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+if ( ! empty($wpdb->collate) )
+	$charset_collate .= " COLLATE $wpdb->collate";
+$sql = "CREATE TABLE $tablename (
+	`ID` bigint(20) NOT NULL auto_increment,
+	`nombre_cliente` varchar(200) DEFAULT '',
+	PRIMARY KEY  (ID),
+	KEY nombre_cliente (nombre_cliente)
+) $charset_collate";</code></pre>
+
+					</section>
+					<section>
+						<p>
+							En este momento podríamos ejecutar la query con <code>$wpdb->query()</code> pero WordPress pone a nuestra disposición una función más para ayudarnos con la creación de tablas: <code>dbDelta()</code>. Si decidimos agregar una columna más en el futuro, dbDelta comprobará si dicha columna no existe y la agregará si es necesaria: <a href="https://gist.github.com/igmoweb/2bff6a912a780d23bcde">https://gist.github.com/igmoweb/2bff6a912a780d23bcde</a>
+						</p>
+					</section>
+
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Encierra el código para crear la tabla en una función y llámala en la activación del plugin.</li>
+							<li>Asegúrate de que la tabla se ha creado correctamente.</li>
+						</ul>
+					</section>
+
+				</section>
+
+				<section>
+					<h2>Permisos y usuarios</h2>
+					<section>
+						<ul>
+							<li>Usuario = Persona registrada</li>
+							<li>Un visitante no es lo  mismo que un usuario</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Funciones típicas para gestionar usuarios</h3>
+						<ul>
+							<li><code>is_use_logged_in</code>: Devuelve true si el actual usuario está "logado"</li>
+							<li><code>get_users()</code> permite sacar una lista de usuarios basado en un array argumentario, como <code>get_posts</code></li>
+							<li><code>wp_insert_user, wp_delete_user, wp_create_user, wp_update_user</code></li>
+							<li><code>get_userdata( $user_id )</code>: Retorna la información de un usuario concreto</li>
+							<li><code>wp_get_current_user()</code>: Retorna la información de usuario actual</li>
+						</ul>
+					</section>
+					<section>
+						<p>Igual que los posts, los usuarios también tienen metadatos. Para ello se pueden usar las funciones <code>add_user_meta, get_user_meta, update_user_meta, delete_user_meta</code></p>
+					</section>
+					<section>
+						<h3>Roles y capabilities</h3>
+						<ul>
+							<li><strong>Roles:</strong> Cada usuario registrado tiene un rol. Definen a un usuario por su grupo de capabilities</li>
+							<li><strong>Capabilities:</strong> Son lo que forman el sistema de permisos. Cada role incluye un grupo de capabilities.</li>
+						</ul>
+						<p>WordPress permite la asignación de roles/capabilities por defecto o también se pueden crear nuevos personalizados.</p>
+					</section>
+					<section>
+						<h3>Roles y capabilities</h3>
+						<p>Para comprobar si el usuario actual tiene permiso para hacer algo, por ejemplo si puede cambiar las opciones del sitio:</p>
+						<pre><code>current_user_can( 'manage_options' )</code></pre>
+					</section>
+					<section>
+						<h3>Roles y capabilities</h3>
+						<p>WordPress utiliza una función para crear nuestros propios roles/capabilities:</p>
+						<code>add_role( $role, $display_name, $capabilities );</code>
+						<p>Por ejemplo, crear un rol para un administrador en un foro y otro para el moderador:</p>
+<pre><code>add_role( ‘forum_administrator’, ‘Forum Administrator’, array( ‘read’ ) );
+add_role( ‘forum_moderator’, ‘Forum Moderator’, array( ‘read’ ) );</code></pre>
+						<p>Éstas funciones tienen la particularidad de que almacenan la información en la BBDD por lo que es aconsejable usarlas sólo en la activación del plugin y borrar los roles en la desinstalación</p>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Crea un nuevo rol con capabilities 'edit_posts', 'publish_posts' y 'delete_posts'</li>
+							<li>Crea ahora un nuevo usuario y asígnale ese rol</li>
+						</ul>
+					</section>
 				</section>
 				
 				<section>
