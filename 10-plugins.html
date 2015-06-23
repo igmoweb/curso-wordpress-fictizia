@@ -146,7 +146,7 @@
 					</section>
 					<section>
 						<h3>Desactivación</h3>
-						<pre><code>register_activation_hook( $file, $funcion );</code></pre>
+						<pre><code>register_deactivation_hook( $file, $funcion );</code></pre>
 						<p>Funciona igual que la anterior pero se ejecuta cuando el plugin se desactiva.</p>
 					</section>
 					<section>
@@ -197,14 +197,16 @@
 						</p>
 					</section>
 					<section>
-						<h3>Registrar un Shortcode</h3>
-						<p>Pero el shortcode API va un poco más allá. El ejemplo anterior sustituye siempre el shortcode por un link con el texto “Comprar Libro”.</p>
-						<p>¿Qué pasaría si tuviéramos distintos links para elegir? Los shortcodes también permiten parámetros:</p>
-					</section>
-					<section>
 					<br>
 						<h3>Registrar un Shortcode</h3>
 <pre><code>add_shortcode( 'book', 'fictizia_render_shortcode' );
+function fictizia_render_shortcode() {
+  $link = 'http://www.amazon.com/Professional-WordPress-Plugin-Development-Williams/dp/0470916222';
+  return '&lt;a href="' . $link . '"&gt;Comprar Libro&lt;/a&gt;';
+}</code></pre>
+					</section>
+					<section>
+					<pre><code>add_shortcode( 'book', 'fictizia_render_shortcode' );
 function fictizia_render_shortcode( $attr ) {
   $link = 'http://www.amazon.com/Professional-WordPress-Plugin-Development-Williams/dp/0470916222';
   if ( isset( $attr['id'] ) ) {
@@ -219,6 +221,16 @@ function fictizia_render_shortcode( $attr ) {
   return '&lt;a href="' . $link . '"&gt;Comprar Libro&lt;/a&gt;';
 }</code></pre>
 						<p>Ahora podremos elegir el tipo de libro usando parámetros: <code>[book id=”wdd”]</code></p>
+					</section>
+					<section>
+					<br>
+						<h3>Registrar un Shortcode</h3>
+<pre><code>add_shortcode( 'book', 'fictizia_render_shortcode' );
+function fictizia_render_shortcode( $attr ) {
+  $link = 'http://www.amazon.com/Professional-WordPress-Plugin-Development-Williams/dp/0470916222';
+
+  return '&lt;a href="' . $link . '"&gt;Comprar Libro&lt;/a&gt;';
+}</code></pre>
 					</section>
 					<section>
 						<ul>
