@@ -532,8 +532,9 @@ add_role( ‘forum_moderator’, ‘Forum Moderator’, array( ‘read’ ) );</
 					<section>
 						<h3>Ejercicio</h3>
 						<ul>
-							<li>Crea un nuevo rol con capabilities 'edit_posts', 'publish_posts' y 'delete_posts'</li>
+							<li>Crea un nuevo rol con capabilities 'edit_posts', 'publish_posts' y 'delete_posts', 'see_my_page'</li>
 							<li>Crea ahora un nuevo usuario y asígnale ese rol</li>
+							<li>Haciendo uso del hook <code>template_redirect</code> y la función <code>is_page( $ID )</code>, elige la ID de una página en tu sitio (cualquiera). Si el usuario no tiene la capability 'see_my_page' cuando se va a mostrar dicha página, detén la ejecución mostrando un mensaje (<code>wp_die()</code>)</li>
 						</ul>
 					</section>
 				</section>
