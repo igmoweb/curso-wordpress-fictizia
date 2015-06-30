@@ -527,8 +527,8 @@ $sql = "CREATE TABLE $tablename (
 						<p>WordPress utiliza una función para crear nuestros propios roles/capabilities:</p>
 						<code>add_role( $role, $display_name, $capabilities );</code>
 						<p>Por ejemplo, crear un rol para un administrador en un foro y otro para el moderador:</p>
-<pre><code>add_role( ‘forum_administrator’, ‘Forum Administrator’, array( ‘read’ ) );
-add_role( ‘forum_moderator’, ‘Forum Moderator’, array( ‘read’ ) );</code></pre>
+<pre><code>add_role( 'forum_administrator', 'Forum Administrator', array( 'read' => true ) );
+add_role( 'forum_moderator', 'Forum Moderator', array( 'read' => true ) );</code></pre>
 						<p>Éstas funciones tienen la particularidad de que almacenan la información en la BBDD por lo que es aconsejable usarlas sólo en la activación del plugin y borrar los roles en la desinstalación</p>
 					</section>
 					<section>
