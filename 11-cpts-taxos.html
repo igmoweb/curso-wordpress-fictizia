@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+	
+
+				<section>
+					<h1>Custom Post Types y Taxonomías</h1>
+				</section>				
+
+				<section>
+					<h2>Custom Post Types</h2>
+					<section>
+						<p>Por defecto WordPress tiene una serie de Tipos de Posts para rellenar de contenido el sitio web:</p>
+						<ul>
+							<li>post</li>
+							<li>page</li>
+							<li>attachment</li>
+							<li>revision</li>
+							<li>nav_menu_item</li>
+						</ul>
+						<p>Conforme WordPress crece podría ser necesario añadir otro tipo de contenido</p>
+					</section>
+					<section>
+						<h3>Ejemplos de los CPTs</h3>
+						<ul>
+							<li>Colección musical</li>
+							<li>Portfolio</li>
+							<li>Productos para una tienda</li>
+							<li>Libros</li>
+							<li>Sliders de imágenes</li>
+							<li>Calendario de eventos</li>
+						</ul>
+					</section>
+					<section>
+					<br>
+						<h3>Registrando un CPT</h3>
+						<p>Registrar un CPT es fácil aunque ofrece muchísimas opciones lo cual puede complicar el desarrollo todo lo que queramos</p>
+						<pre><code>&lt;?php register_post_type( $post_type, $args ); ?&gt;</code></pre>
+						<p><code>$post_type</code> El nombre (slug) de nuestro CPT</p>
+						<p><code>$args</code> Un array de argumentos que definirá al CPT</p>
+							<p>Para ver una lista total de los argumentos se puede acceder al Codex:
+							<a href="http://codex.wordpress.org/Function_Reference/register_post_type">http://codex.wordpress.org/Function_Reference/register_post_type</a></p>
+					</section>
+					<section>
+						<p>Una vez tengamos registrado el CPT debemos refrescar los permalinks (cuando registramos un CPT, las URLs cambian). Para ello hay varias opciones:</p>
+						<ul>
+							<li>Ir a Ajustes>Enlaces Permanentes y guardar la pantalla.</li>
+							<li>Usar la función <code>flush_rewrite_rules()</code> justo después de registrar el CPT en cada carga de WordPress (mala opción)</li>
+							<li>Usar la función <code>flush_rewrite_rules()</code> al activar el plugin (mejor opción).</li>
+						</ul>
+						<p>flush_rewrite_rules() es una operación costosa y al registrar un nuevo CPT no deberíamos hacer un refresco en cada carga de WordPress, por ello lo más interesante es meterlo en un plugin y activarlo aparte.</p>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Registra un nuevo CPT llamado Portfolio con las siguientes características:</p>
+						<ul>
+							<li>Que sea público</li>
+							<li>Excluir de los resultados de la búsqueda</li>
+							<li>Que el slug del rewrite sea 'proyectos'</li>
+							<li>Que tenga editor y thumbnail.</li>
+							<li>Puedes ayudarte de http://generatewp.com/post-type/</li>
+							<li>Usa por ahora flush_rewrite_rules() justo después de registrarlo.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Ahora crea una plantilla para su archivo siguiendo la jerarquía de las plantillas en
+							<a href="https://developer.wordpress.org/files/2014/10/wp-template-hierarchy.jpg">https://developer.wordpress.org/files/2014/10/wp-template-hierarchy.jpg</a>. Necesitarás
+							también un <code>content-[slug].php</code> donde tendrás que quitar el título pero tendrás
+							que añadir la imagen destacada.</p>
+					</section>
+				</section>
+
+				<section>
+					<h2>Taxonomías</h2>
+					<section>
+						<p>Una taxonomía sirve para categorizar posts/CPTs</p>
+						<p>En WordPress existen 2 por defecto:</p>
+						<ul>
+							<li>Categorías: de tipo jerárquica</li>
+							<li>Etiquetas: de tipo no jerárquica</li>
+						</ul>
+						<p>WordPress proporciona funciones para añadir nuevos tipos de taxonomías</p>
+					</section>
+					<section>
+					<br>
+						<h3>Registrando una CT</h3>
+						<p>Registrar una CT es muy similar a un CPT:</p>
+						<pre><code>&lt;?php register_taxonomy( $taxonomy, $object_type, $args ); ?&gt;</code></pre>
+						<ul>
+							<li>$taxonomy El slug de nuestra taxonomía</li>
+							<li>$object_type El slug del CPT (o post, page, etc)</li>
+							<li>
+								$args Se pueden consultar en <a href="http://codex.wordpress.org/Function_Reference/register_taxonomy">http://codex.wordpress.org/Function_Reference/register_taxonomy</a>
+							</li>
+						</ul>
+						<p>Para mostrar las categorías tal y como hicimos con los posts y the_category() podemos usar la función:</p>
+						<pre><code>&lt;?php the_terms( $post_id, $taxonomy ); ?&gt;</code></pre>
+					</section>
+
+					<section>
+						<h3>Ejercicio</h3>
+						<ul>
+							<li>Registra una nueva taxonomía llamada Type con slug <code>portfolio-type</code> que sea jerárquica y pública. Asínasela al CPT portfolio</li>
+							<li>Usa la función <code>the_terms( $post_id, $taxonomy, $sep )</code> para mostrar los tipos de un portfolio en el archivo de portfolios.</li>
+						</ul>
+					</section>
+				</section>
+
+				
+
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+						Reveal.configure({ slideNumber: 'c / t' });
+
+
+		</script>
+
+	</body>
+</html>
