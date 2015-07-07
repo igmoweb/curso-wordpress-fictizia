@@ -87,7 +87,7 @@
 <pre><code>
 add_action( 'wp_enqueue_scripts', 'fictizia_enqueue_scripts' );
 function fictizia_enqueue_scripts() {
-	wp_enqueue_script( 'fictizia-load-posts', FICTIZIA_PLUGIN_URL . '/js/load-posts.js', array( 'jquery' ) );
+	wp_enqueue_script( 'fictizia-load-posts', ignacio_get_url() . 'js/load-posts.js', array( 'jquery' ) );
 }</code></pre>
 					</section>
 					<section>
