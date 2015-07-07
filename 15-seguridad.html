@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+	
+
+				<section>
+					<h1>Seguridad</h1>
+				</section>				
+				
+				<section>
+					<h2>FTP</h2>
+					<p>Cuando nos conectamos a un servidor es recomendable usar STFP encriptado. Esto normalmente está fuera de nuestro alcance y es el propio hosting el que tiene que proporcionarlo</p>
+				</section>
+				<section>
+					<h2>Permisos de archivo</h2>
+					<p>Permitir el acceso de escritura a cualquier archivo en el servidor es peligroso.</p>
+					<p>Únicamente algunas carpetas deben cumplir este esquema:</p>
+					<ul>
+						<li><strong>Directorio raíz</strong>: Sólamente el usuario que gestiona el FTP debería tener acceso con escritura excepto el ficher <code>.htaccess</code> para que WP pueda generar los permalinks</li>
+						<li><strong>wp-admin/</strong> Sólamente el usuario que gestiona el FTP debería tener acceso con escritura</li>
+						<li><strong>wp-includes/</strong> Sólamente el usuario que gestiona el FTP debería tener acceso con escritura</li>
+						<li><strong>wp-content/</strong> Acceso con escritura para el usuario y el proceso del servidor</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Seguridad en BBDD</h2>
+					<p>Si en el mismo servidor habitan 2 instalaciones distintas es bueno separar cada instalación en su propia BBDD con usuarios administradores diferentes</p>
+					<p>De esta forma si un atacante logra entrar sólo podrá afectar una de ellas.</p>
+				</section>
+				<section>
+					<p>Se puede encontrar una guía completa sobre seguridad en el servidor en: <a href="http://codex.wordpress.org/Hardening_WordPress">http://codex.wordpress.org/Hardening_WordPress</a></p>
+				</section>
+
+				<section>
+					<h2>Seguridad en el código</h2>
+					<section>
+						<p>En el lenguaje computacional, “seguridad” normalmente se refiere a, entre otros:</p>
+						<ul>
+							<li>
+								Cross Site Scripting (XSS): <a href="https://es.wikipedia.org/wiki/Cross-site_scripting">https://es.wikipedia.org/wiki/Cross-site_scripting</a>
+							</li>
+							<li>
+								Cross-site request Forgery: <a href="http://es.wikipedia.org/wiki/Cross_Site_Request_Forgery">http://es.wikipedia.org/wiki/Cross_Site_Request_Forgery</a>
+							</li>
+							<li>
+								Inyección SQL: <a href="http://es.wikipedia.org/wiki/Inyecci%C3%B3n_SQL">http://es.wikipedia.org/wiki/Inyecci%C3%B3n_SQL</a>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<p>En WordPress, asegurar nuestro código no es difícil.</p>
+						<ul>
+							<li>Una de las primeras reglas es que no hay que confiar en ningún dato que el usuario nos envía, sea através de un formulario o de la misma URL. Todos los datso $_GET o $_POST deben ser validados antes de usarse ya sea con funciones propias de WordPress o de PHP.</li>
+							<li>Comprobar los permisos del usuario con <code>current_user_can</code>()</li>
+							<li>Uso de Nonces con <code>wp_nonce_field, check_admin_referrer, check_ajax_referrer</code>...</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Validando los datos de entrada</h3>
+														
+<pre><code>$clean = array();
+
+// Age: positive integer only
+$clean[‘age’] = absint( $_POST[‘age’] );
+
+// Color: red, green or blue only
+switch( $_POST[‘color’] ) {
+	case ‘red’:
+	case ‘green’:
+	case ‘blue’:
+		$clean[‘color’] = $_POST[‘color’];
+		break;
+}</code></pre>
+					</section>
+					<section>
+						<h3>Validando los datos de entrada</h3>
+						<ul>
+							<li><code>absint()</code> Convierte cualquier cosa en un número entero</li>
+							<li><code>sanitize_text_field()</code> Elimina caracteres UTF-8 inválidos. Útil para validar cajas de texto en formularios</li>
+							<li><code>sanitize_email() y is_email()</code> para validar emails.</li>
+							<li><code>wp_kses()</code> Elimina HTML inválido. Útil para eliminar &lt;script&gt; de una caja de texto.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Escapando la salida</h3>
+						<p>En un atributo HTML, es necesario escapar la salida siempre que sea necesario.</p>
+						<p>Las funciones <code>esc_*</code> nos ayudan a esto</p>
+						<p>Imaginemos el siguiente código:</p>
+					</section>
+					<section>
+						<h3>Escapando la salida</h3>
+<pre><code>&lt;h1&gt; &lt;?php echo $page_title; ?&gt; &lt;/h1&gt;
+&lt;a href=”#anchor” title=” &lt;?php echo $link_title; ?&gt; ”&gt; link &lt;/a&gt;</code></pre>
+						<p>Los atributos $page_title y $link_title no sabemos qué pueden contener. Una forma de romper el código sería así:</p>
+<pre><code>$page_title = 'break &lt;/h1&gt; &lt;h1&gt; the tag';
+$link_title = ' onmouseover="alert(\'XSS\');"';</code></pre>
+						<p>Solución:</p>
+<pre><code>&lt;h1&gt; &lt;?php echo esc_html( $page_title; ) ?&gt; &lt;/h1&gt;
+&lt;a href=&rdquo;#anchor&rdquo; title=&rdquo; &lt;?php echo esc_attr( $link_title; ) ?&gt; &rdquo;&gt; link &lt;/a&gt;</code></pre>
+					</section>
+					<section>
+						<h3>Escapando la salida</h3>
+						<p>Para las URLs existe una función especial:</p>
+<pre><code>&lt;a href=&rdquo;&lt;?php echo esc_url( $url ); ?&gt;&ldquo;&gt;Link Text &lt;/a&gt;</code> </pre>
+						<p>Pero si pensamos guardar la URL en la BBDD:</p>
+<pre><code>esc_url_raw( $url )</code></pre>
+					</section>
+					<section>
+						<h3>Escapando la salida</h3>
+						<p>Si vamos a guardar una caja de texto que necesita contener Javascript, se utiliza:</p>
+<pre><code>esc_js( $javascript_code );</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+					<p>Existen muchas otras funciones para mejorar la seguridad de nuestros Plugins/Themes. Hay una guía (todavía en construcción) en <a href="https://developer.wordpress.org/plugins/security/">https://developer.wordpress.org/plugins/security/</a></p>
+				</section>
+			</div>
+
+				
+
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+						Reveal.configure({ slideNumber: 'c / t' });
+
+
+		</script>
+
+	</body>
+</html>

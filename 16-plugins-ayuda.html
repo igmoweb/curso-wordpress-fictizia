@@ -40,46 +40,47 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
+	
 
 				<section>
-					<section>
-						<ul>
-							<li><a href="01-temario.html">Temario</a></li>
-							<li><a href="02-intro-php.html">Introducción a PHP</a></li>
-							<li><a href="03-intro-a-wp.html">Introducción a WordPress y MySQL</a></li>
-							<li><a href="04-conceptos-basicos.html">Conceptos Básicos de WordPress</a></li>
-							<li><a href="05-themes.html">Introducción a los Themes</a></li>
-							<li><a href="06-maquetando-un-tema-desde-cero.html">Maquetando un Tema desde cero</a></li>
-							<li><a href="07-the-loop.html">The Loop</a></li>
-							<li><a href="08-mostrando-el-contenido.html">Mostrando el contenido</a></li>
-							<li><a href="09-customizer-api.html">Customizer API</a></li>
-						</ul>
-					</section>
-					<section>
-						<ul>
-							<li><a href="10-plugins.html">Plugins</a></li>
-							<li><a href="11-cpts-taxos.html">CPTs y Taxonomías</a></li>
-							<li><a href="12-menus-administracion.html">Menús de administración</a></li>
-							<li><a href="13-settings-api.html">Settings API</a></li>
-							<li><a href="14-ajax.html">AJAX</a></li>
-							<li><a href="15-seguridad.html">Seguridad</a></li>
-							<li><a href="16-plugins-ayuda.html">Plugins de ayuda al desarrollo</a></li>
-						</ul>
-					</section>
-				</section>
+					<h1>Plugins de ayuda al desarrollo</h1>
+				</section>				
+
 				<section>
-					<h2>Para todos los días:</h2>
-					<li>1. Abrir Sublime Text</li>
-					<li>2. Arrastrar la carpeta htdocs en Sublime Text</li>
-					<li>3. Abrir un terminal</li>
-					<li>4. <code>cd /Applications/MAMP/htdocs/curso-wp</code></li>
-					<li>5. <code>git pull</code></li>
-					<li>6. Abrir MAMP</li>
-					<li>7. Dirección localhost:8888/wordpress</li>
-					<li>8. Dirección del curso localhost:8888/curso-wp</li>
+					<h2>Query monitor</h2>					
+					<p>Plugin multifunción para revisar cada detalle de la ejecución.</p>
+					<a href="https://wordpress.org/plugins/query-monitor/">https://wordpress.org/plugins/query-monitor/</a>
 				</section>
+
+				<section>
+					<h2>Emails Log</h2>
+					<p>Permite crear un log para guardar todos los emails que sen envían desde la instalación</p>
+					<a href="https://wordpress.org/plugins/email-log/">https://wordpress.org/plugins/email-log/</a>
+				</section>
+
+				<section>
+					<h2>Theme Check</h2>
+					<p>Permite revisar si un Tema cumple los estándares de WordPress</p>
+					<a href="https://wordpress.org/plugins/theme-check/">https://wordpress.org/plugins/theme-check/</a>
+				</section>
+
+				<section>
+					<h2>Developer plugin</h2>
+					<p>Metaplugin que permite instalar otros plugins útiles para desarrollar.</p>
+					<a href="https://wordpress.org/plugins/developer/">https://wordpress.org/plugins/developer/</a>
+				</section>
+				
+				
+			</div>
+
+				
+
 
 			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
 
 		</div>
 
@@ -108,6 +109,9 @@
 					{ src: 'plugin/notes/notes.js', async: true }
 				]
 			});
+
+						Reveal.configure({ slideNumber: 'c / t' });
+
 
 		</script>
 

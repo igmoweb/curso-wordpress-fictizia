@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+	
+
+				<section>
+					<h1>AJAX</h1>
+					<p>Créditos: <a href="http://www.yukei.net/2014/03/ajax-wordpress-manera-correcta/">http://www.yukei.net/2014/03/ajax-wordpress-manera-correcta/</a></p>
+				</section>	
+
+				<section>
+					<p>El método correcto para ejecutar AJAX en WordPress, se integra armoniosamente con WordPress y permite utilizar sus características propias para facilitar el desarrollo y el funcionamiento de estas interacciones. </p>
+					<p>La mejor forma de implementar peticiones AJAX es através de <code>/wp-admin/admin-ajax.php</code>, que presenta varias ventajas:</p>
+				</section>			
+				<section>
+					<ul>
+						<li>Podemos utilizar todas las funciones de WordPress, sin necesidad de tener que incluir manualmente archivos</li>
+						<li>Es posible trabajar tanto con peticiones autenticadas como de libre disponibilidad</li>
+						<li>Seguirá funcionando en cualquier actualización de WordPress</li>
+						<li>Por lo mismo, cuando un plugin intenta detectar si se está realizando alguna acción con AJAX, se define con este método en particular</li>
+						<li>
+							Esto se puede ilustrar con un ejemplo muy básico, por ejemplo, cargar una serie de posts al hacer click sobre un botón: <a href="https://gist.github.com/igmoweb/5be13486c164a1568665">https://gist.github.com/igmoweb/5be13486c164a1568665</a>
+						</li>
+					</ul>
+				</section>
+				<section>
+					<p>Aquí lo importante es que el parámetro action debe coincidir con el nombre de la acción en la que luego vamos a engancharnos en WordPress.</p>
+					<p>
+						Luego en nuestro plugin ejecutaremos una función cada vez que alguien haga click sobre el botón de esta manera:<a href="https://gist.github.com/igmoweb/039d8efae91970f969d5">https://gist.github.com/igmoweb/039d8efae91970f969d5</a>
+					</p>
+				</section>
+				<section>
+					<p>Los hooks deben declararse de la siguiente manera:</p>
+					<ul>
+						<li>wp_ajax_ACTION: Ejecutará la función siempre que el usuario haya hecho login.</li>
+						<li>wp_ajax_nopriv_ACTION: Ejecutará la función para usuarios que no hayan hecho login.</li>
+					</ul>
+					<p>Si queremos que cualquier usuario pueda hacer uso del botón tendremos que usar ambas declaraciones.</p>
+				</section>
+				<section>
+					<h2>Ejercicio</h2>
+					<section>
+						
+						<ul>
+							<li>Crea un nuevo js en tu carpeta js del plugin, llámalo como quieras y pega el código JS que hemos visto antes.</li>
+							<li>“Encola” dicho script usando wp_enqueue_script().</li>
+						</ul>
+<pre><code>
+add_action( 'wp_enqueue_scripts', 'fictizia_enqueue_scripts' );
+function fictizia_enqueue_scripts() {
+	wp_enqueue_script( 'fictizia-load-posts', FICTIZIA_PLUGIN_URL . '/js/load-posts.js', array( 'jquery' ) );
+}</code></pre>
+					</section>
+					<section>
+						<ul>
+							<li>Ahora vamos a crear un botón en el widget que creamos hace varias clases. Aquí tienes el HTML:
+<pre><code>&lt;button id=&quot;load-posts&quot;&gt;&lt;?php _e( 'Load posts', 'fictizia' ); ?&gt;&lt;/button&gt;
+&lt;ul id=&quot;load-posts-results&quot;&gt;&lt;/ul&gt;</code></pre>
+							</li>
+							<li>Ahora basándote en el argumento action del .js, añade los dos Hooks AJAX para ejecutar una función que haciendo uso de la función get_posts recoja 3 posts y los devuelva como un JSON.</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>El problema del ejercicio anterior es que la variable del .js ajaxurl no existe. Sin embargo sí que lo hará si el JS lo encolamos en el área de administración.</li>
+							<li>Para el front hay que declarar dicha variable (o simplemente crear otra). La URL a la que debería estar llamando debería ser algo así: http:/localhost:8888/wordpress/wp-admin/admin-ajax.php</li>
+							<li>Para pasar variables a un fichero JS se puede utilizar la función <code>wp_localize_script()</code>:</li>
+						</ul>							
+						
+						<pre><code>
+add_action( 'wp_enqueue_scripts', 'fictizia_enqueue_scripts' );
+function fictizia_enqueue_scripts() {
+	wp_enqueue_script( 'fictizia-load-posts', FICTIZIA_PLUGIN_URL . '/js/load-posts.js', array( 'jquery' ) );
+	$l10n = array(
+		'ajaxurl' => admin_url( 'admin-ajax.php' )
+	);
+	wp_localize_script( 'fictizia-load-posts', 'fictizia', $l10n );
+}</code></pre>
+					</section>
+					<section>
+						<li>
+							De esta forma, en nuestro JS podemos llamar a la variable ajaxurl dentro del objeto fictizia: <code>fictizia.ajaxurl</code>
+						</li>
+					</section>
+				</section>
+				
+			</div>
+
+				
+
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+						Reveal.configure({ slideNumber: 'c / t' });
+
+
+		</script>
+
+	</body>
+</html>
