@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+	
+
+				<section>
+					<h1>Otras APIs de WordPress</h1>
+				</section>				
+				
+				<section>
+					<h2>Dashboard Widgets API</h2>
+					<section>
+						<p>Permite añadir widgets al escritorio de administración de WordPress</p>
+						<p>Se usa una función para ello:</p>
+<pre><code>wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_callback );</code></pre>
+					</section>
+					<section>
+						<ul>
+							<li><strong>$widget_id</strong>: Identificador único del widget</li>
+							<li><strong>$widget_name</strong>: El nombre que aparecerá en el widget</li>
+							<li><strong>$callback</strong>: Función que saca por pantalla el contenido del widget</li>
+							<li><strong>$control_callback</strong>: Opcional. El nombre de una función para procesar formularios dentro del widget.</li>
+						</ul>
+					</section>
+					<section>
+<pre><code>function example_add_dashboard_widgets() {
+	wp_add_dashboard_widget(
+             'example_dashboard_widget',         // Widget slug.
+             'Example Dashboard Widget',         // Title.
+             'example_dashboard_widget_function' // Display function.
+    );	
+}
+add_action( 'wp_dashboard_setup', 'example_add_dashboard_widgets' );
+
+function example_dashboard_widget_function() {
+	echo "Hello World, I'm a great Dashboard Widget";
+}
+</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Haciendo uso de la función <a href="https://codex.wordpress.org/Function_Reference/wp_count_posts">wp_count_posts</a>, muestra un widget de escritorio que saque por pantalla el número de portfolios que hemos creado.</p>
+					</section>
+				</section>
+
+				<section>
+					<h2>HTTP API</h2>
+					<section>
+						<p>Permite realizar un intercambio de información entre sitios ajenos al nuestro mediante peticiones HTTP</p>
+						<p>Una petición HTTP puede devolvernos un JSON que luego podremos procesar ta y como haríamos con un array así como código HTML</p>
+						<p>WordPress permite hacer este tipo de peticiones de forma sencilla sin necesidad de un código complicado usando PHP.</p>
+					</section>
+					<section>
+						<p>En WordPress, una petición HTTP se realiza mediante las funciones <code>wp_remote_*</code></p>
+						<ul>
+							<li><code>wp_remote_get</code> para peticiones <code>GET</code></li>
+							<li><code>wp_remote_post</code> para peticiones <code>POST</code></li>
+							<li><code>wp_remote_head</code> para peticiones <code>HEAD</code></li>
+						</ul>
+					</section>
+					<section>
+						<p>Cada una de las funciones acepta una serie de parámetros, comentadas están las más usadas.</p>
+<pre><code>$defaults = array (
+	'timeout' => 5, // Tiempo en el que se cancela si no hay respuesta
+	'redirection' => 5,
+	'httpversion' => '1.0',
+	'user-agent' => 'WordPress/4.2; http://example.com/',
+	'blocking' => true,
+	'headers' => array (), // Array de cabeceras adicionales
+	'cookies' => array (), // Array de cookies para pasar al receptor
+	'body' => NULL, // Cuerpo del mensaje (array o string)
+	'compress' => false,
+	'decompress' => true,
+	'sslverify' => true,
+)</code></pre>
+					</section>
+					<section>
+						<h3>Retorno de las funciones</h3>
+						<ul>
+							<li>Si todo va bien: Devuelve un array</li>
+							<li>O un Objeto WP_Error en otro caso</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Funciones de ayuda</h3>
+						<ul>
+						<ul>
+							<li><strong>wp_remote_retrieve_response_code()</strong> — Devuelve el código de la respuesta (200, 404...)</li>
+							<li><strong>wp_remote_retrieve_response_message()</strong> — Devuelve sólo el mensaje de dicho código ("OK", "Forbidden"...)</li>
+							<li><strong>wp_remote_retrieve_body()</strong> — Devuelve el cuerpo de la respuesta (HTML o un JSON...)</li>
+							<li><strong>wp_remote_retrieve_headers()</strong> — Devuelve las cabeceras de la respuesta</li>
+						</ul>
+						</ul>
+					</section>
+
+					<section>
+<pre><code>$url = 'http://www.example.com/bleh';
+
+$response = wp_remote_get( $url );	
+
+if( is_wp_error( $response ) ) {
+	$code = $response->get_error_message();
+	wp_die( 'Requests could not execute. Error was: ' . $code );
+}
+
+if( wp_remote_retrieve_response_code( $response ) == 404 ) {
+	wp_die( 'Link not found' );
+}
+
+echo 'Link found';</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Haciendo uso de <code>var_dump</code>, saca por pantalla el resultado de una respuesta a una URL errónea y a otra que exista en el widget de escritorio.</p>
+					</section>
+				</section>	
+				<section>
+					<h2>Cron API</h2>
+					<section>
+						<p>Cron es la manera que WordPress tiene de programar eventos</p>
+						<p>Con ellos, WordPress comprueba si existe una nueva versión de WP, de los plugins o de los temas cada cierto tiempo.</p>
+						<p>Mediante la API podemos programar nuestros propios Crons, por ejemplo, cada hora, semana, año...</p>
+					</section>
+					<section>
+						<p>Se tiende a pensar que los Crons se ejecutan siempre pero no es así</p>
+						<p>Los Crons <u>śólo se ejecutarán si hay visitas en la página</u></p>
+						<p>Cada vez que alguien refresca la página, WP comprueba si hay algo que hacer</p>
+						<p>Si queremos Crons 100% fiables necesitaremos hacer uso de los Crons de UNIX en el servidor.</p>
+					</section>
+				</section>
+				
+				
+			</div>
+
+				
+
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+						Reveal.configure({ slideNumber: 'c / t' });
+
+
+		</script>
+
+	</body>
+</html>
