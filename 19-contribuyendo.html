@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Curso WordPress - Fictizia</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/curso-wp.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+	
+
+				<section>
+					<h1>Contribuyendo en WordPress</h1>
+				</section>				
+
+				<section>
+					<h2>Maneras de contribuir</h2>
+					<ul>
+						<li><a href="https://codex.wordpress.org/Codex:Contributing">Mejorando la docummentación del Codex</a></li>
+						<li><a href="https://make.wordpress.org/polyglots/handbook/">Ayudando con las traduccíones</a></li>
+						<li><a href="https://wordpress.org/support/">Echando una mano en los foros de soporte</a></li>
+						<li><a href="https://make.wordpress.org/">Desarrollo del código, tests, diseño, Accesibilidad, adaptación a móviles...</a></li>
+						<li>Subiendo fallos al <a href="https://core.trac.wordpress.org/">WordPress Trac</a> (o dando solución a algún ticket)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Estar a la última</h2>
+					<p>Existen dos canales de comunicación principales:</p>
+					<ul>
+						<li><a href="https://make.wordpress.org/chat/">Slack de WordPress a nivel mundial</a></li>
+						<li><a href="http://wp-es.es/slack/">Slack en España</a></li>
+						<li>Subscripción a alguna de las seecciones en <a href="https://make.wordpress.org/">https://make.wordpress.org/</a></li>
+					</ul>
+				</section>
+				
+				
+				
+				
+			</div>
+
+				
+
+
+			</div>
+
+			<div class="header">
+           		<a href="index.html">Índice</a>
+         	</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+						Reveal.configure({ slideNumber: 'c / t' });
+
+
+		</script>
+
+	</body>
+</html>

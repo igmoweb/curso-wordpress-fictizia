@@ -154,17 +154,83 @@ echo 'Link found';</code></pre>
 					</section>
 				</section>	
 				<section>
-					<h2>Cron API</h2>
+					<h2>CRON API</h2>
 					<section>
-						<p>Cron es la manera que WordPress tiene de programar eventos</p>
+						<p>CRON es la manera que WordPress tiene de programar eventos</p>
 						<p>Con ellos, WordPress comprueba si existe una nueva versión de WP, de los plugins o de los temas cada cierto tiempo.</p>
-						<p>Mediante la API podemos programar nuestros propios Crons, por ejemplo, cada hora, semana, año...</p>
+						<p>Mediante la API podemos programar nuestros propios CRONs, por ejemplo, cada hora, semana, año...</p>
 					</section>
 					<section>
 						<p>Se tiende a pensar que los Crons se ejecutan siempre pero no es así</p>
 						<p>Los Crons <u>śólo se ejecutarán si hay visitas en la página</u></p>
 						<p>Cada vez que alguien refresca la página, WP comprueba si hay algo que hacer</p>
 						<p>Si queremos Crons 100% fiables necesitaremos hacer uso de los Crons de UNIX en el servidor.</p>
+					</section>
+					<section>
+						<h3>Programando un CRON</h3>
+						<p>Cuando programamos un CRON en realidad estamos creando un nuevo Hook. El Hook se ejecutará sólo cada cierto tiempo (el que especifiquemos)</p>
+						<p>Hay que tener en cuenta que un CRON <u>se programa una sola vez</u>, durante la activación del Plugin y que hay que eliminarlo al desactivarlo.</p>
+					</section>
+					<section>
+						<h3>Programando un CRON</h3>
+						<pre><code>wp_schedule_event( timestamp, recurrence, hook, args );</code></pre>
+						<ul>
+							<li><code>$timestamp</code>: La hora a la que queremos ejecutarlo</li>
+							<li><code>$recurrence</code>: Frecuencia con la que debería ejecutarse el CRON</li>
+							<li><code>$hook</code>: El nombre del hook a ejecutar</li>
+							<li><code>$args</code>: un array de argumentos para pasar al Hook</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Programando un CRON</h3>
+						<p>Cuando activamos el plugin:</p>
+<pre><code>register_activation_hook( __FILE__, 'ignacio_activate' );
+function ignacio_activate() {
+	wp_schedule_event( current_time(), 'hourly', 'ignacio_hourly_event' );
+}
+
+add_action( 'ignacio_hourly_event', 'do_this_hourly' );
+function do_this_hourly() {
+	// do something every hour
+}</code></pre>
+					</section>
+					<section>
+						<h3>Programando un CRON</h3>
+						<p>Al desactivar el plugin:</p>
+<pre><code>register_deactivation_hook(__FILE__, 'ignacio_deactivate');
+
+function ignacio_deactivate() {
+	wp_clear_scheduled_hook( 'ignacio_hourly_event' );
+}</code></pre>
+					</section>
+					<section>
+						<h3>Programando un CRON</h3>
+						<p>Por defecto, la recurrencia sólo puede adoptar tres valores:</p>
+						<ul>
+							<li>hourly</li>
+							<li>twicedaily</li>
+							<li>daily</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Programando un CRON</h3>
+						<p>Para crear nuestras propias reglas de recurrencia:</p>
+<pre><code>
+add_filter( 'cron_schedules', 'add_custom_cron_intervals', 10, 1 );
+ 
+function add_custom_cron_intervals( $schedules ) {
+    $schedules['ten_minutes'] = array(
+        'interval'  => 600,  // Intervalo en segundos
+        'display'   => __( 'Once Every 10 Minutes', 'ignacio' )
+    );
+ 
+    return $schedules; 
+}
+</code></pre>
+					</section>
+					<section>
+						<h3>Ejercicio</h3>
+						<p>Programa un nuevo CRON que cada minuto te envíe un email (usa <code>wp_mail</code> para ello)</p>
 					</section>
 				</section>
 				
