@@ -31,6 +31,25 @@ function ignacio_activate() {
 	ignacio_create_portfolio_cpt();
 	ignacio_register_taxonomy();
 	flush_rewrite_rules();
+
+	wp_schedule_event( current_time(), 'ignacio_minutely', 'ignacio_minutely' );
+}
+
+add_action( 'cron_schedules', 'ignacio_add_minutely_recurrence' );
+function ignacio_add_minutely_recurrence( $schedules ) {
+	$schedules['ignacio_minutely'] = array(
+		'interval' => 60,
+		'display' => 'Ignacio'
+	);
+
+	return $schedules;
+}
+
+
+
+add_action( 'ignacio_minutely', 'ignacio_send_email' );
+function ignacio_send_email() {
+	//error_log( "CRON EJECUTADO" );
 }
 
 add_action( 'template_redirect', 'ignacio_see_my_page' );
@@ -43,6 +62,7 @@ function ignacio_see_my_page() {
 register_deactivation_hook( __FILE__, 'ignacio_deactivate' );
 function ignacio_deactivate() {
 	delete_option( 'ignacio_version' );
+	wp_clear_scheduled_hook( 'ignacio_minutely' );
 }
 
 function ignacio_create_table() {
@@ -72,6 +92,8 @@ include_once ignacio_get_path() . 'includes/shortcodes.php';
 include_once ignacio_get_path() . 'includes/widget.php';
 include_once ignacio_get_path() . 'includes/portfolio.php';
 include_once ignacio_get_path() . 'includes/admin-menu.php';
+include_once ignacio_get_path() . 'includes/woocommerce.php';
+include_once ignacio_get_path() . 'includes/dashboard-widget.php';
 
 //add_action( 'init', 'test_queries' );
 function test_queries() {
@@ -81,5 +103,47 @@ function test_queries() {
 	var_dump($results);
 }
 
+// AJAX
+add_action( 'wp_enqueue_scripts', 'ignacio_enqueue_scripts' );
+function ignacio_enqueue_scripts() {
+	wp_enqueue_script( 'ignacio-load-posts', ignacio_get_url() . 'js/load-posts.js', array( 'jquery' ) );
 
+	$ignacio = array(
+		'ajaxurl' => admin_url() . '/admin-ajax.php',
+		'gracias_string' => __( 'Gracias', 'ignacio' ),
+		'nonce' => wp_create_nonce( 'load-posts' )
+	);
+	wp_localize_script( 'ignacio-load-posts', 'ignacio', $ignacio );
+}
+
+add_action( 'wp_ajax_fictizia_load_posts', 'ignacio_load_posts' );
+add_action( 'wp_ajax_nopriv_fictizia_load_posts', 'ignacio_load_posts' );
+function ignacio_load_posts() {
+	check_ajax_referer( 'load-posts', 'security' );
+
+	$posts = get_posts( array(
+		'posts_per_page' => absint( $_POST['num_posts'] ),
+		'orderby' => 'rand'
+	));
+
+	foreach ( $posts as $post ) {
+		?>
+		<li><?php echo get_the_title( $post->ID ); ?></li>
+		<?php
+	}
+
+	die();
+}
+
+
+//add_action( 'init', 'ignacio_http_api' );
+function ignacio_http_api() {
+	$url = 'http://www.fdfdsfdsfsdg.com/';
+	$response = wp_remote_get( $url );
+	var_dump( $response );
+
+	$url = 'http://www.google.es';
+	$response = wp_remote_get( $url );
+	var_dump( $response );
+}
 

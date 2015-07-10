@@ -13,6 +13,15 @@ function register_my_custom_menu_page() {
 		'dashicons-admin-media' 
 	);
 
+	add_submenu_page( 
+		'ignacio-plugin', 
+		__( 'Submenu', 'ignacio' ),
+		__( 'Submenu', 'ignacio' ), 
+		'manage_options', 
+		'ignacio-sub-plugin',
+		'ignacio_display_settings_menu' 
+	);
+
 }
 
 add_action( 'admin_init', 'ignacio_process_clients_form' );
@@ -87,4 +96,83 @@ function ignacio_get_clientes() {
 function ignacio_get_table_name() {
 	global $wpdb;
 	return $wpdb->prefix . 'fictizia_clientes';
+}
+
+
+function ignacio_render_submenu() {
+	?>
+	<div class="wrap">
+		<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
+		Hola
+	</div>
+	<?php
+}
+
+
+
+
+
+
+
+function ignacio_settings_init() { 
+	register_setting( 'ignacio_options', 'ignacio_options', 'ignacio_sanitize_settings' );
+
+	add_settings_section( 'ignacio_general_options', __( 'General Options', 'ignacio' ), 'ignacio_render_general_options_section', 'ignacio-sub-plugin' );
+	add_settings_field( 'ignacio_admin_background_color', __( 'Background color', 'fictizia' ), 'ignacio_display_color_field', 'ignacio-sub-plugin', 'ignacio_general_options' );
+}
+add_action( 'admin_init', 'ignacio_settings_init' );
+
+
+function ignacio_render_general_options_section() { 
+	echo __( 'This section description', 'fictizia' );
+}
+
+function ignacio_display_color_field() { 
+	$options = get_option( 'ignacio_options' );
+	$color = $options['admin_color'];
+	?>
+		<input type='text' name='ignacio_options[admin_color]' value="<?php echo $color; ?>">
+	<?php
+}
+
+
+function ignacio_display_settings_menu() {
+	?>
+		<div class="wrap">
+			<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
+ 
+			<form action="options.php" method="post">
+				<?php settings_fields( 'ignacio_options' ); ?>
+				<?php do_settings_sections( 'ignacio-sub-plugin' ); ?>
+ 
+				<?php submit_button( null, 'primary', 'ignacio_options[submit_settings]' ); ?>
+			</form>
+		</div>
+	<?php
+}
+
+function ignacio_sanitize_settings( $input ) {
+	$options = get_option( 'ignacio_options' );
+
+	if ( ! current_user_can( 'manage_options' ) )
+		return $options;
+
+	if ( ! is_array( $options ) )
+		$options = array();
+
+	$options['admin_color'] = sanitize_text_field( $input['admin_color'] );
+
+	return $options;
+}
+
+add_action( 'admin_head', 'ignacio_change_background');
+function ignacio_change_background() {
+	$options = get_option( 'ignacio_options' );
+	?>
+	<style>
+		body {
+			background-color:<?php echo $options['admin_color']; ?>;
+		}
+	</style>
+	<?php
 }

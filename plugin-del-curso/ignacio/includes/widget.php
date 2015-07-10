@@ -34,11 +34,16 @@ class Fictizia_Widget extends WP_Widget {
 
 		echo $args['before_widget']; // <aside>
 
-			echo $args['before_title']; // <h2>
+		echo $args['before_title']; // <h2>
 
-				echo apply_filters( 'widget_title', $instance['title'] );
+		echo apply_filters( 'widget_title', $instance['title'] );
 
-			echo $args['after_title']; // </h2>
+		echo $args['after_title']; // </h2>
+
+		?>
+		<button id="load-posts"><?php _e( 'Load posts', 'fictizia' ); ?></button>
+		<ul id="load-posts-results"></ul>
+		<?php
 
 		echo $args['after_widget']; // </aside>
 	}
